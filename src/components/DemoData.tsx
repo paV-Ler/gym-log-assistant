@@ -1,6 +1,6 @@
 import { Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { Surface } from "@/components/Surface";
+import { Notice } from "@/components/Notice";
 import { Button } from "@/components/ui/button";
 import { StorageWriteError } from "@/data";
 import { useHasDemoData, useLoadDemoData, useRemoveDemoData } from "@/hooks/useDemoData";
@@ -47,22 +47,24 @@ export function DemoDataNotice() {
   };
 
   return (
-    <Surface
-      padding="compact"
-      className="mb-6 grid grid-cols-1 items-center gap-2 text-sm md:flex md:justify-between md:gap-4"
+    <Notice
+      className="order-last text-muted-foreground md:order-none"
+      action={
+        <Button
+          variant="link"
+          disabled={remove.isPending}
+          onClick={() => void removeDemo()}
+          className="h-auto p-0"
+        >
+          <span>
+            Remove<span className="hidden md:inline"> demo data</span>
+          </span>
+        </Button>
+      }
     >
-      <span className="text-muted-foreground">
-        You are looking at demo data. Your own records are kept when you remove it.
-      </span>
-      <Button
-        variant="link"
-        disabled={remove.isPending}
-        onClick={() => void removeDemo()}
-        className="h-auto justify-start p-0 md:justify-end"
-      >
-        Remove demo data
-      </Button>
-    </Surface>
+      You are looking at demo data.
+      <span className="hidden md:inline"> Your own records are kept when you remove it.</span>
+    </Notice>
   );
 }
 

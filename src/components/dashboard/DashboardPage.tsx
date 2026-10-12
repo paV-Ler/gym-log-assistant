@@ -3,9 +3,9 @@ import { ClientOnly, Link } from "@tanstack/react-router";
 import { LayoutDashboard, Plus } from "lucide-react";
 import { DemoDataNotice, DemoDataOffer, LoadDemoDataButton } from "@/components/DemoData";
 import { EmptyState } from "@/components/EmptyState";
+import { Notice } from "@/components/Notice";
 import { PageHeader } from "@/components/PageHeader";
 import { ErrorState, LoadingState } from "@/components/PageStatus";
-import { Surface } from "@/components/Surface";
 import { Button } from "@/components/ui/button";
 import { useExercises } from "@/hooks/useExercises";
 import { useWorkoutDraft } from "@/hooks/useWorkoutDraft";
@@ -53,15 +53,15 @@ const hasUnfinishedDraft = (draft: WorkoutDraft | null | undefined): boolean =>
 
 function DraftNotice() {
   return (
-    <Surface
-      padding="compact"
-      className="mb-6 grid grid-cols-1 items-center gap-2 text-sm md:flex md:justify-between md:gap-4"
+    <Notice
+      action={
+        <Button asChild variant="link" className="h-auto p-0">
+          <Link to="/">Continue draft</Link>
+        </Button>
+      }
     >
       <span className="text-muted-foreground">You have an unfinished workout.</span>
-      <Button asChild variant="link" className="h-auto p-0">
-        <Link to="/">Continue draft</Link>
-      </Button>
-    </Surface>
+    </Notice>
   );
 }
 
@@ -157,9 +157,12 @@ export function DashboardPage() {
   return (
     <>
       <DashboardHeader />
-      <DemoDataNotice />
-      <NextWorkoutNotice />
-      {hasUnfinishedDraft(draft.data) && <DraftNotice />}
+      {/* Phones show the notices as one tight group, with the demo note last. */}
+      <div className="mb-6 grid gap-2 empty:hidden md:gap-6">
+        <DemoDataNotice />
+        <NextWorkoutNotice />
+        {hasUnfinishedDraft(draft.data) && <DraftNotice />}
+      </div>
       {workouts.data.length === 0 ? (
         <EmptyState
           icon={LayoutDashboard}
