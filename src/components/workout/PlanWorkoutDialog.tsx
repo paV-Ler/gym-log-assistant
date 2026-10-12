@@ -108,7 +108,7 @@ export function PlanWorkoutDialog({ open, onOpenChange }: PlanWorkoutDialogProps
                 size="sm"
                 onClick={() => form.setPickerOpen(true)}
               >
-                <Plus /> Add exercise
+                <Plus /> Add exercises
               </Button>
               {form.exercisesError && <FieldError>{form.exercisesError}</FieldError>}
             </div>
@@ -127,11 +127,12 @@ export function PlanWorkoutDialog({ open, onOpenChange }: PlanWorkoutDialogProps
       </Dialog>
 
       <ExercisePicker
-        title="Add exercise"
+        title="Add exercises"
+        multiple
         open={form.pickerOpen}
         onOpenChange={form.setPickerOpen}
         addedIds={form.addedIds}
-        onSelect={form.addExercise}
+        onSelect={form.addExercises}
       />
     </>
   );

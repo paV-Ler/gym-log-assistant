@@ -102,13 +102,14 @@ export const useWorkoutForm = ({ initial, workout }: WorkoutFormOptions) => {
     setPickerOpen(true);
   };
 
-  const selectExercise = (exercise: Exercise) => {
+  const selectExercises = (picked: Exercise[]) => {
+    const [replacement] = picked;
     updateEntries((current) =>
-      changingEntryId
+      changingEntryId && replacement
         ? current.map((entry) =>
-            entry.id === changingEntryId ? withExercise(entry, exercise) : entry,
+            entry.id === changingEntryId ? withExercise(entry, replacement) : entry,
           )
-        : [...current, newDraftEntry(exerciseSnapshot(exercise))],
+        : [...current, ...picked.map((exercise) => newDraftEntry(exerciseSnapshot(exercise)))],
     );
     setPickerOpen(false);
   };
@@ -190,10 +191,12 @@ export const useWorkoutForm = ({ initial, workout }: WorkoutFormOptions) => {
     picker: {
       open: pickerOpen,
       setOpen: setPickerOpen,
-      title: changingEntryId ? "Change exercise" : "Add exercise",
+      title: changingEntryId ? "Change exercise" : "Add exercises",
+      // Changing swaps one exercise for another; adding takes several at once.
+      multiple: !changingEntryId,
       addedIds: new Set(draft.entries.map((entry) => entry.exerciseId)),
       openFor: openPicker,
-      select: selectExercise,
+      select: selectExercises,
     },
     discardDialog: { open: discardOpen, setOpen: setDiscardOpen, confirm: discard },
   };

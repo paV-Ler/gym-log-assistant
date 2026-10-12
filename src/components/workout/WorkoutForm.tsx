@@ -58,7 +58,7 @@ export function WorkoutForm({ initial, workout }: WorkoutFormProps) {
           description="Add your first exercise to start logging sets."
         >
           <Button className="mt-6" onClick={() => picker.openFor()}>
-            <Plus /> Add exercise
+            <Plus /> Add exercises
           </Button>
         </EmptyState>
       ) : (
@@ -78,7 +78,7 @@ export function WorkoutForm({ initial, workout }: WorkoutFormProps) {
             ))}
           </div>
           <Button variant="outline" onClick={() => picker.openFor()}>
-            <Plus /> Add exercise
+            <Plus /> Add exercises
           </Button>
           <WorkoutSummary entries={form.entries} exerciseCount={draft.entries.length} />
         </>
@@ -117,6 +117,7 @@ export function WorkoutForm({ initial, workout }: WorkoutFormProps) {
         open={picker.open}
         onOpenChange={picker.setOpen}
         addedIds={picker.addedIds}
+        multiple={picker.multiple}
         onSelect={picker.select}
       />
 

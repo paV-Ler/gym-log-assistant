@@ -41,8 +41,8 @@ export const usePlanWorkoutForm = (onPlanned: () => void) => {
     setTimeError("");
   };
 
-  const addExercise = (exercise: Exercise) => {
-    setExercises((current) => [...current, exerciseSnapshot(exercise)]);
+  const addExercises = (picked: Exercise[]) => {
+    setExercises((current) => [...current, ...picked.map(exerciseSnapshot)]);
     setExercisesError("");
     setPickerOpen(false);
   };
@@ -78,7 +78,7 @@ export const usePlanWorkoutForm = (onPlanned: () => void) => {
     title,
     setTitle,
     exercises,
-    addExercise,
+    addExercises,
     removeExercise,
     addedIds: new Set(exercises.map((exercise) => exercise.exerciseId)),
     pickerOpen,
