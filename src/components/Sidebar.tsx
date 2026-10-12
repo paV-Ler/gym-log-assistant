@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { SidebarStatus } from "@/components/SidebarStatus";
 import { Wordmark } from "@/components/Wordmark";
 import { PRIMARY_ACTION, SIDEBAR_ITEMS } from "@/components/navigation";
 import { Button } from "@/components/ui/button";
@@ -37,7 +36,6 @@ export function Sidebar() {
           </Link>
         ))}
       </nav>
-      <SidebarStatus />
     </aside>
   );
 }
