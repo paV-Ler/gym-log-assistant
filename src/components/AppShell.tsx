@@ -28,10 +28,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       <MobileNavigation />
       <main className="md:pl-60">
         <div
-          // Remounted per page so each one fades in.
-          key={pathname}
           className={cn(
-            "page-enter mobile-page mx-auto w-full min-w-0 px-3 pt-6 md:px-6 md:py-12",
+            "mobile-page mx-auto w-full min-w-0 px-3 pt-6 md:px-6 md:py-12",
             wide ? "max-w-6xl" : "max-w-4xl",
           )}
         >

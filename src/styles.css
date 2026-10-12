@@ -195,17 +195,16 @@
   box-shadow: inset 0 1px 0 var(--edge);
 }
 
-/* Opacity only: a transform here would re-anchor the fixed save bar while it runs. */
-@keyframes page-enter {
+/* Holds the loading skeleton back: data read from the browser arrives at once, and a
+   skeleton shown for a frame reads as a flicker. */
+@keyframes skeleton-appear {
   from {
     opacity: 0;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .page-enter {
-    animation: page-enter 180ms ease-out;
-  }
+.skeleton-delayed {
+  animation: skeleton-appear 1ms 250ms both;
 }
 
 @utility tabular {

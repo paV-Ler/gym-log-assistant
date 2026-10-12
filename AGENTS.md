@@ -60,7 +60,7 @@ below are the conventions to keep when changing code.
 - Use the semantic color tokens from `src/styles.css`; no hard-coded colors. Error text and invalid borders use `danger`; `destructive` is only for filled delete buttons.
 - Show a problem with one field under that field with `FieldError` and mark only that input `aria-invalid`. Use `FormAlert` for a problem with the form as a whole, such as a failed save. No browser validation bubbles: forms set `noValidate`.
 - Number fields go through `NumberInput`, which drops letters and extra separators; give each a `maxLength` from `src/lib/limits.ts`.
-- Animate only through `useCountUp` (figures, via the `value` object of `StatTile`), `SERIES_ANIMATION` (charts), the `page-enter` fade in `src/styles.css` and the `LoadingState` skeleton; all of them stop for reduced motion. `page-enter` animates opacity only, because a transform would re-anchor the fixed save bar.
+- Animate only through `useCountUp` (figures, via the `value` object of `StatTile`), `SERIES_ANIMATION` (charts) and the `LoadingState` skeleton; all of them stop for reduced motion. Do not fade or remount a page on navigation: the router changes the location before the next page is ready, so the old page flashes. The skeleton appears only after 250ms (`skeleton-delayed`), because local data loads at once.
 - `NumberInput` steppers: use `stepperLayout="sides"` where the field has the full row on phones; keep the default inside table cells.
 
 ## Design system
