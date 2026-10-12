@@ -14,7 +14,7 @@ interface ExerciseGroupListProps {
 
 export function ExerciseGroupList({ groups, onDelete }: ExerciseGroupListProps) {
   return (
-    <div className="space-y-9">
+    <div className="space-y-8">
       {groups.map(({ muscleGroup, items }) => (
         <section key={muscleGroup} aria-label={muscleGroup}>
           <SectionTitle

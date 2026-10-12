@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { SectionTitle } from "@/components/SectionTitle";
+import { StatTile } from "@/components/StatTile";
 import { Surface } from "@/components/Surface";
 import { Label } from "@/components/ui/label";
 import { NumberInput } from "@/components/ui/number-input";
@@ -25,7 +26,7 @@ export function CalculatorPage() {
     <>
       <PageHeader
         title="1RM Calculator"
-        description="Estimate your one-rep max from a set you have actually done."
+        description="Estimate your one-rep max from a set you have actually done"
       />
 
       <Surface as="section">
@@ -67,27 +68,18 @@ export function CalculatorPage() {
         )}
       </Surface>
 
-      <Surface as="section" className="mt-6">
-        {valid ? (
-          <div className="flex flex-wrap items-end justify-between gap-6">
-            <div>
-              <p className="text-sm text-muted-foreground">Estimated 1RM (Epley)</p>
-              <p className="tabular mt-1 break-words text-4xl md:text-5xl font-semibold text-primary">
-                {formatFixed(epley)}
-                <span className="ml-2 text-xl font-normal text-muted-foreground">kg</span>
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Brzycki</p>
-              <p className="tabular mt-1 text-xl font-medium">{formatFixed(brzycki)} kg</p>
-            </div>
-          </div>
-        ) : (
+      {valid ? (
+        <div className="mt-6 grid grid-cols-2 gap-3 md:gap-4">
+          <StatTile label="Estimated 1RM (Epley)" value={`${formatFixed(epley)} kg`} emphasis />
+          <StatTile label="Brzycki" value={`${formatFixed(brzycki)} kg`} />
+        </div>
+      ) : (
+        <Surface as="section" className="mt-6">
           <p className="py-6 text-center text-sm text-muted-foreground">
             Enter a weight and a rep count to see your estimate.
           </p>
-        )}
-      </Surface>
+        </Surface>
+      )}
 
       <Surface as="section" padding="flush" className="mt-6">
         <SectionTitle

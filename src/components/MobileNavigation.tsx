@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 const TABS_BEFORE_ACTION = 2;
 
 const TAB_BUTTON =
-  "h-16 min-w-0 flex-col gap-1 rounded-none px-0 text-[10px] font-normal hover:bg-transparent [&_svg]:size-5";
+  "h-16 min-w-0 flex-col gap-1 rounded-none px-0 text-2xs font-normal hover:bg-transparent [&_svg]:size-5";
 
 const tabColor = (active: boolean): string => (active ? "text-primary" : "text-muted-foreground");
 
@@ -55,7 +55,7 @@ function ActionButton({ item, pathname }: { item: NavItem; pathname: string }) {
           <Icon aria-hidden="true" />
         </Link>
       </Button>
-      <span className={cn("mt-1 text-[10px]", tabColor(active))}>{label}</span>
+      <span className={cn("mt-1 text-2xs", tabColor(active))}>{label}</span>
     </div>
   );
 }

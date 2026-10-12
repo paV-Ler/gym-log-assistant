@@ -23,7 +23,7 @@ export function ExerciseFilters({
   onGroupChange,
 }: ExerciseFiltersProps) {
   return (
-    <div className="mb-8 space-y-4">
+    <div className="mb-6 space-y-4">
       <div className="relative">
         <Search
           aria-hidden="true"

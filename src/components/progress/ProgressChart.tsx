@@ -1,6 +1,6 @@
 import {
-  Line,
-  LineChart,
+  Area,
+  AreaChart,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
@@ -10,14 +10,18 @@ import {
 import { ChartTooltip } from "@/components/charts/ChartTooltip";
 import {
   activeRow,
+  AREA_FILL,
+  AREA_GRADIENT_ID,
+  AREA_GRADIENT_STOPS,
+  axisScale,
   AXIS_STROKE,
   AXIS_TICK,
   CHART_MARGIN,
   GRID_PROPS,
-  paddedDomain,
   SERIES_ANIMATION,
   SERIES_COLOR,
   yTickCount,
+  X_AXIS_PADDING,
   type TooltipProps,
 } from "@/components/charts/chart-theme";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -53,22 +57,38 @@ interface ProgressChartProps {
 export default function ProgressChart({ points, metric }: ProgressChartProps) {
   const mobile = useIsMobile();
   const reducedMotion = useReducedMotion();
-  const domain = paddedDomain(points.map((point) => point[metric]));
+  const scale = axisScale(
+    points.map((point) => point[metric]),
+    yTickCount(mobile),
+  );
   return (
     <div className="h-72 w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={points} margin={CHART_MARGIN}>
+        <AreaChart data={points} margin={CHART_MARGIN}>
+          <defs>
+            <linearGradient id={AREA_GRADIENT_ID} x1="0" y1="0" x2="0" y2="1">
+              {AREA_GRADIENT_STOPS.map((stop) => (
+                <stop
+                  key={stop.offset}
+                  offset={stop.offset}
+                  stopColor={SERIES_COLOR}
+                  stopOpacity={stop.opacity}
+                />
+              ))}
+            </linearGradient>
+          </defs>
           <CartesianGrid {...GRID_PROPS} />
           <XAxis
             minTickGap={mobile ? TICK_GAP.mobile : TICK_GAP.desktop}
             dataKey="date"
+            padding={X_AXIS_PADDING}
             tick={AXIS_TICK}
             stroke={AXIS_STROKE}
             tickFormatter={formatDayMonth}
           />
           <YAxis
-            tickCount={yTickCount(mobile)}
-            domain={domain}
+            domain={scale.domain}
+            ticks={scale.ticks}
             tick={AXIS_TICK}
             stroke={AXIS_STROKE}
             width={56}
@@ -76,17 +96,19 @@ export default function ProgressChart({ points, metric }: ProgressChartProps) {
             unit=" kg"
           />
           <Tooltip content={<PointTooltip />} cursor={{ stroke: AXIS_STROKE }} />
-          <Line
+          <Area
             type="monotone"
             dataKey={metric}
             stroke={SERIES_COLOR}
             strokeWidth={2}
+            fill={AREA_FILL}
+            fillOpacity={1}
             dot={{ r: 4, fill: SERIES_COLOR, stroke: SERIES_COLOR }}
             activeDot={{ r: 6 }}
             isAnimationActive={!reducedMotion}
             {...SERIES_ANIMATION}
           />
-        </LineChart>
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   );

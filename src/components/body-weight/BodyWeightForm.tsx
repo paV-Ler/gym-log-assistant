@@ -39,7 +39,6 @@ export function BodyWeightForm({ entries }: { entries: BodyWeightEntry[] }) {
               maxLength={WEIGHT_INPUT_MAX_LENGTH}
               value={form.weight}
               onValueChange={form.changeWeight}
-              placeholder="0"
             />
             {form.weightError && <FieldError>{form.weightError}</FieldError>}
           </div>

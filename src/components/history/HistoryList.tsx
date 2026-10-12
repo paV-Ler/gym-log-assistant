@@ -27,7 +27,7 @@ export function HistoryList() {
   if (workouts.isPending || exercises.isPending) {
     return (
       <>
-        <PageHeader title="History" />
+        <PageHeader title="History" description="Every workout you have saved" />
         <LoadingState label="Loading workouts…" />
       </>
     );
@@ -36,7 +36,7 @@ export function HistoryList() {
   if (workouts.isError || exercises.isError) {
     return (
       <>
-        <PageHeader title="History" />
+        <PageHeader title="History" description="Every workout you have saved" />
         <ErrorState
           message="Could not load history."
           onRetry={() => {
@@ -51,13 +51,13 @@ export function HistoryList() {
   if (workouts.data.length === 0) {
     return (
       <>
-        <PageHeader title="History" />
+        <PageHeader title="History" description="Every workout you have saved" />
         <EmptyState
           icon={History}
           title="No workouts yet"
           description="Workouts you save will be listed here."
         >
-          <div className="mt-5 flex flex-wrap justify-center gap-2">
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
             <Button asChild>
               <Link to="/">Log a workout</Link>
             </Button>
@@ -70,9 +70,9 @@ export function HistoryList() {
 
   return (
     <>
-      <PageHeader title="History" />
+      <PageHeader title="History" description="Every workout you have saved" />
       {groupByMonth(workouts.data).map(([month, items]) => (
-        <section key={month} className="mb-10">
+        <section key={month} className="mb-8">
           <h2 className="mb-4 text-sm font-semibold text-muted-foreground">{month}</h2>
           <div className="space-y-3">
             {items.map((workout) => (

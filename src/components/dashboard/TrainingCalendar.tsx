@@ -25,7 +25,7 @@ const WEEKDAY_LABELS = ["Mon", "", "Wed", "", "Fri", "", ""];
 /** Grid rows and columns are 1-based, and the first of each holds the labels. */
 const LABEL_OFFSET = 2;
 
-const CELL = "aspect-square rounded-[2px]";
+const CELL = "aspect-square rounded-xs";
 
 const dayLabel = (day: CalendarDay): string => {
   const date = formatDay(day.date);
@@ -75,7 +75,7 @@ export function TrainingCalendar({ calendar }: { calendar: Calendar }) {
     <>
       <div ref={scroller} className="overflow-x-auto pb-1">
         <div
-          className="grid min-w-[640px] gap-[2px] text-[10px] leading-none text-muted-foreground"
+          className="grid min-w-[640px] gap-[2px] text-2xs leading-none text-muted-foreground"
           style={{ gridTemplateColumns: `auto repeat(${weeks.length}, minmax(0, 1fr))` }}
         >
           {months.map((month) => (
@@ -119,7 +119,7 @@ export function TrainingCalendar({ calendar }: { calendar: Calendar }) {
         <span className="flex items-center gap-1" aria-hidden="true">
           Less
           {LEVELS.map((level) => (
-            <span key={level} className={cn("size-2.5 rounded-[2px]", LEVEL_CLASS[level])} />
+            <span key={level} className={cn("size-2.5 rounded-xs", LEVEL_CLASS[level])} />
           ))}
           More
         </span>

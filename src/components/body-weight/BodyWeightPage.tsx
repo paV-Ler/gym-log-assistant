@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { PageHeader } from "@/components/PageHeader";
 import { ErrorState, LoadingState } from "@/components/PageStatus";
 import { SectionTitle } from "@/components/SectionTitle";
-import { StatTile } from "@/components/StatTile";
+import { StatTile, type TileTrend } from "@/components/StatTile";
 import { Surface } from "@/components/Surface";
 import { StorageWriteError } from "@/data";
 import { useBodyWeight, useDeleteBodyWeight } from "@/hooks/useBodyWeight";
@@ -37,7 +37,18 @@ const formatRange = (lowest: number, highest: number, singleEntry: boolean): str
   return `${formatNumber(lowest)}–${formatNumber(highest)} kg`;
 };
 
-function Summary({ summary }: { summary: BodyWeightSummary }) {
+// Neither direction is good or bad for body weight, so the arrow stays neutral.
+const changeTrend = (change: number | null): TileTrend | undefined => {
+  if (!change) return undefined;
+  return { direction: change > 0 ? "up" : "down" };
+};
+
+interface SummaryProps {
+  summary: BodyWeightSummary;
+  series: readonly number[];
+}
+
+function Summary({ summary, series }: SummaryProps) {
   const { latest, sincePrevious, overTrend, lowest, highest } = summary;
   return (
     <div className="mb-6 grid grid-cols-1 gap-3 min-[350px]:grid-cols-2 md:gap-4 lg:grid-cols-4">
@@ -45,14 +56,17 @@ function Summary({ summary }: { summary: BodyWeightSummary }) {
         label="Current"
         value={{ amount: latest.weight, format: (kg) => `${formatNumber(kg)} kg` }}
         detail={formatDay(latest.date)}
+        series={series}
       />
       <StatTile
         label="Since previous entry"
         value={sincePrevious === null ? "–" : formatWeightChange(sincePrevious)}
+        trend={changeTrend(sincePrevious)}
       />
       <StatTile
         label={`Last ${TREND_DAYS} days`}
         value={overTrend === null ? "–" : formatWeightChange(overTrend)}
+        trend={changeTrend(overTrend)}
       />
       <StatTile label="Range" value={formatRange(lowest, highest, sincePrevious === null)} />
     </div>
@@ -107,7 +121,7 @@ export function BodyWeightPage() {
 
       {summary ? (
         <>
-          <Summary summary={summary} />
+          <Summary summary={summary} series={chronological(entries).map((entry) => entry.weight)} />
           <Surface as="section" className="mb-6">
             <SectionTitle title="Trend" className="mb-4" />
             <ClientOnly fallback={chartPlaceholder}>

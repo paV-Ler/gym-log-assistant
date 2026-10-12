@@ -39,7 +39,7 @@ export function PlanRow({ plan, now, inProgress, onStart, onDelete }: PlanRowPro
       </div>
       <div className="flex shrink-0 items-center gap-1">
         {!inProgress && (
-          <Button size="sm" variant={due ? "default" : "outline"} onClick={onStart}>
+          <Button size="sm" variant="outline" onClick={onStart}>
             <Play /> Start
           </Button>
         )}

@@ -41,7 +41,7 @@ export function HistoryDetail({ workoutId }: { workoutId: string }) {
 
   return (
     <>
-      <Button asChild variant="ghost" className="mb-5 -ml-3">
+      <Button asChild variant="ghost" className="mb-6 -ml-3">
         <Link to="/history">
           <ArrowLeft /> Back to history
         </Link>

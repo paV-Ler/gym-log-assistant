@@ -57,7 +57,7 @@ export function WorkoutForm({ initial, workout }: WorkoutFormProps) {
           title="No exercises yet"
           description="Add your first exercise to start logging sets."
         >
-          <Button className="mt-5" onClick={() => picker.openFor()}>
+          <Button className="mt-6" onClick={() => picker.openFor()}>
             <Plus /> Add exercise
           </Button>
         </EmptyState>

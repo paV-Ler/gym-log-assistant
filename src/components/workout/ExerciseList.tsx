@@ -34,7 +34,7 @@ export function ExerciseList({ groups, addedIds, onSelect, rowClassName }: Exerc
                 disabled={added}
                 onClick={() => onSelect(exercise)}
                 className={cn(
-                  "flex w-full items-center justify-between rounded-md px-2 py-2 text-left text-sm transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-40",
+                  "flex w-full items-center justify-between rounded-md px-2 py-2 text-left text-sm transition-colors hover:bg-hover disabled:pointer-events-none disabled:opacity-40",
                   rowClassName,
                 )}
               >

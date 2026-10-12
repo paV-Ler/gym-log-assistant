@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { ClientOnly, Link } from "@tanstack/react-router";
-import { LayoutDashboard, Plus } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 import { DemoDataNotice, DemoDataOffer, LoadDemoDataButton } from "@/components/DemoData";
 import { EmptyState } from "@/components/EmptyState";
 import { Notice } from "@/components/Notice";
@@ -34,19 +34,8 @@ const chartPlaceholder = <div className="h-64" />;
 
 const TWO_COLUMNS = "grid grid-cols-1 gap-x-6 xl:grid-cols-2";
 
-function DashboardHeader() {
-  return (
-    <div className="grid grid-cols-1 items-start gap-4 md:flex md:flex-wrap md:justify-between">
-      <PageHeader title="Dashboard" description="An overview of your recent training." />
-      {/* Phones reach the same action through the bottom navigation. */}
-      <Button asChild className="hidden md:inline-flex">
-        <Link to="/">
-          <Plus /> Log workout
-        </Link>
-      </Button>
-    </div>
-  );
-}
+// Logging a workout is one click away in the sidebar and the bottom bar, so the page adds no button.
+const HEADER = <PageHeader title="Dashboard" description="An overview of your recent training" />;
 
 const hasUnfinishedDraft = (draft: WorkoutDraft | null | undefined): boolean =>
   !!draft && (draft.entries.length > 0 || draft.notes.trim() !== "");
@@ -73,18 +62,14 @@ interface OverviewProps {
 function Overview({ workouts, exercises }: OverviewProps) {
   const today = new Date();
   const weeks = weeklyBuckets(workouts, today);
-  const [lastWeek, thisWeek] = weeks.slice(-2);
 
   return (
     <>
-      {thisWeek && lastWeek && (
-        <SummaryTiles
-          thisWeek={thisWeek}
-          lastWeek={lastWeek}
-          workoutsThisMonth={workoutsThisMonth(workouts, today)}
-          streak={weeklyStreak(workouts, today)}
-        />
-      )}
+      <SummaryTiles
+        weeks={weeks}
+        workoutsThisMonth={workoutsThisMonth(workouts, today)}
+        streak={weeklyStreak(workouts, today)}
+      />
 
       <div className={TWO_COLUMNS}>
         <DashboardSection title="Weekly volume" subtitle="Last 8 weeks">
@@ -133,7 +118,7 @@ export function DashboardPage() {
   if (workouts.isPending || exercises.isPending) {
     return (
       <>
-        <DashboardHeader />
+        {HEADER}
         <LoadingState label="Loading dashboard…" />
       </>
     );
@@ -142,7 +127,7 @@ export function DashboardPage() {
   if (workouts.isError || exercises.isError) {
     return (
       <>
-        <DashboardHeader />
+        {HEADER}
         <ErrorState
           message="Could not load dashboard."
           onRetry={() => {
@@ -156,7 +141,7 @@ export function DashboardPage() {
 
   return (
     <>
-      <DashboardHeader />
+      {HEADER}
       {/* Phones show the notices as one tight group, with the demo note last. */}
       <div className="mb-6 grid gap-2 empty:hidden md:gap-6">
         <DemoDataNotice />
@@ -169,7 +154,7 @@ export function DashboardPage() {
           title="No workouts yet"
           description="Your overview will appear here once you log a workout."
         >
-          <div className="mt-5 flex flex-wrap justify-center gap-2">
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
             <Button asChild>
               <Link to="/">Log your first workout</Link>
             </Button>

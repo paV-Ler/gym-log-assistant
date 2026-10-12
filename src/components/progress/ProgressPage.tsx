@@ -43,7 +43,7 @@ export function ProgressPage({ selectedId, onSelect }: ProgressPageProps) {
   if (workouts.isPending || exercises.isPending) {
     return (
       <>
-        <PageHeader title="Progress" />
+        <PageHeader title="Progress" description="How each exercise has moved over time" />
         <LoadingState label="Loading progress…" />
       </>
     );
@@ -52,7 +52,7 @@ export function ProgressPage({ selectedId, onSelect }: ProgressPageProps) {
   if (workouts.isError || exercises.isError) {
     return (
       <>
-        <PageHeader title="Progress" />
+        <PageHeader title="Progress" description="How each exercise has moved over time" />
         <ErrorState
           message="Could not load progress."
           onRetry={() => {
@@ -69,13 +69,13 @@ export function ProgressPage({ selectedId, onSelect }: ProgressPageProps) {
   if (!current) {
     return (
       <>
-        <PageHeader title="Progress" />
+        <PageHeader title="Progress" description="How each exercise has moved over time" />
         <EmptyState
           icon={ChartIcon}
           title="No workouts yet"
           description="Log a workout to start tracking your progress."
         >
-          <Button asChild className="mt-5">
+          <Button asChild className="mt-6">
             <Link to="/">Log a workout</Link>
           </Button>
         </EmptyState>
@@ -88,7 +88,7 @@ export function ProgressPage({ selectedId, onSelect }: ProgressPageProps) {
 
   return (
     <>
-      <PageHeader title="Progress" />
+      <PageHeader title="Progress" description="How each exercise has moved over time" />
       <div className="mb-6">
         <ExerciseSelect options={options} value={current.id} onChange={onSelect} />
       </div>

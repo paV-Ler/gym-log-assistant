@@ -29,7 +29,7 @@ export function Surface({
   return (
     <Component
       className={cn(
-        "min-w-0 rounded-lg border border-border bg-card",
+        "surface-edge min-w-0 rounded-lg border border-border bg-card",
         PADDING[padding],
         interactive && "block transition-colors hover:border-input hover:bg-hover/40",
         className,

@@ -60,20 +60,23 @@ below are the conventions to keep when changing code.
 - Use the semantic color tokens from `src/styles.css`; no hard-coded colors. Error text and invalid borders use `danger`; `destructive` is only for filled delete buttons.
 - Show a problem with one field under that field with `FieldError` and mark only that input `aria-invalid`. Use `FormAlert` for a problem with the form as a whole, such as a failed save. No browser validation bubbles: forms set `noValidate`.
 - Number fields go through `NumberInput`, which drops letters and extra separators; give each a `maxLength` from `src/lib/limits.ts`.
-- Animate only through `useCountUp` (figures, via the `value` object of `StatTile`) and `SERIES_ANIMATION` (charts); both honour `useReducedMotion`.
+- Animate only through `useCountUp` (figures, via the `value` object of `StatTile`), `SERIES_ANIMATION` (charts), the `page-enter` fade in `src/styles.css` and the `LoadingState` skeleton; all of them stop for reduced motion. `page-enter` animates opacity only, because a transform would re-anchor the fixed save bar.
 - `NumberInput` steppers: use `stepperLayout="sides"` where the field has the full row on phones; keep the default inside table cells.
 
 ## Design system
 
 Tokens live in `src/styles.css`; the components below are the only way to use them.
 
-- **Surfaces.** Four steps, each lighter than the one it sits on: `background` (page) → `card` → `popover` (popovers, dialogs, toasts, tooltips) → `hover`. A dialog must never be darker than the page behind it. Shadows are for floating layers only; buttons, inputs and cards have none.
+- **Surfaces.** Four steps, each lighter than the one it sits on: `background` (page) → `card` → `popover` (popovers, dialogs, toasts, tooltips) → `hover`. A dialog must never be darker than the page behind it. Shadows are for floating layers only; buttons and inputs have none, and a card has only the lit top edge that `Surface` gives it.
 - **Cards.** Never hand-write a card: use `Surface` (`padding="compact"` for one-line notices, `"flush"` when the content pads itself, `interactive` for cards that are a link). Stacked cards are 24px apart (`mb-6` / `mt-6`); tiles in a grid use `gap-4`.
-- **Headings.** `PageHeader` for the page title, `SectionTitle` for every card or section heading (it takes a subtitle and an action). Type scale: page title `text-xl md:text-2xl`, section title `text-base font-semibold`, body `text-sm`, captions `text-xs text-muted-foreground`, headline figures through `StatTile`.
+- **Headings.** `PageHeader` for the page title, `SectionTitle` for every card or section heading (it takes a subtitle and an action). Type scale: page title `text-xl md:text-2xl`, section title `text-base font-semibold`, body `text-sm`, captions `text-xs text-muted-foreground`, headline figures through `StatTile` (`emphasis` for the one result a page exists for, `trend` for a change, `series` for a sparkline behind the figure). The smallest text is `text-2xs` (11px), for calendar and bottom-bar labels only.
 - **Fields.** Inputs, selects and picker triggers are 36px tall on desktop (44px on phones) with the `field` background. Use `fieldSize="lg"` for a page's headline field instead of overriding height or background. Label every field with `Label`.
 - **Pickers.** Dates use `DatePicker`, times use `TimePicker`; both open from `PickerTrigger`, so do not style one without the other. No native `date`, `time` or `number` inputs.
 - **Focus.** One style for everything, defined once in `src/styles.css` (2px `ring` outline, 2px offset). Do not add `ring-*` focus classes or remove the outline in a component.
 - **Hover and selection.** Hover is always the neutral `hover` token. The coral `accent` tint means selected or active, never hover.
+- **Change.** A change that is plainly good (more training than last week) uses `positive`; anything else stays muted. Body weight has no good direction, so its arrows are neutral.
+- **Notices and loading.** One-line messages with an action use `Notice`; a loading page shows the `LoadingState` skeleton, never bare text.
+- **Charts.** Line charts are filled areas with the shared gradient and take their y-axis from `axisScale`, which gives evenly spaced round ticks.
 - **Buttons.** One filled primary button per page for its main action; `outline` for secondary actions, `ghost` for icon buttons and quiet actions, `destructive` only inside delete confirmations.
 - **Choosing one of a few options** (filters, chart metric): `ChipGroup`, whose selected chip is tinted rather than filled so it does not compete with the primary button.
 - **Icon-only buttons** get an `aria-label` and a `Hint` tooltip, not a `title` attribute.

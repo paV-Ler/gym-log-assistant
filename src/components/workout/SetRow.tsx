@@ -56,7 +56,6 @@ export function SetRow({
             value={set.weight}
             onValueChange={(weight) => onChange({ weight })}
             className="tabular md:h-9"
-            placeholder="0"
           />
         </td>
         <td className={FIELD_CELL}>
@@ -76,7 +75,6 @@ export function SetRow({
               }
             }}
             className="tabular md:h-9"
-            placeholder="0"
           />
         </td>
         <td className="w-11 py-2 text-right md:w-10">
