@@ -12,6 +12,7 @@ import { formatLongDay } from "@/lib/date";
 import { exerciseLabel } from "@/lib/workout";
 import { DeleteWorkoutDialog } from "./DeleteWorkoutDialog";
 import { ExerciseSetsTable } from "./ExerciseSetsTable";
+import { RepeatWorkoutButton } from "./RepeatWorkoutButton";
 import { WorkoutNotFound } from "./WorkoutNotFound";
 
 export function HistoryDetail({ workoutId }: { workoutId: string }) {
@@ -52,6 +53,7 @@ export function HistoryDetail({ workoutId }: { workoutId: string }) {
           {notes && <p className="mt-2 text-sm text-muted-foreground">{notes}</p>}
         </div>
         <div className="grid grid-cols-2 gap-2 md:flex">
+          <RepeatWorkoutButton workout={workout.data} className="col-span-2" />
           <Button asChild variant="outline">
             <Link to="/history/$workoutId/edit" params={{ workoutId }}>
               <Pencil /> Edit

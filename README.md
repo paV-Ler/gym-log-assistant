@@ -22,7 +22,8 @@ Single user, English UI, weights in kilograms. All data stays in the browser
   Workout page counts down to it ("in 2 days", "in 3 hours"); **Start** fills the
   form with the planned exercises, and the plan disappears once the workout is saved.
 - **History** — past workouts grouped by month, with a details page, editing and
-  deletion.
+  deletion. **Repeat** fills the workout form with the same exercises and sets,
+  dated today.
 - **Exercises** — a library of default exercises in six muscle groups, with search,
   a group filter and your own custom exercises. Every exercise links to videos that
   show how to do it.

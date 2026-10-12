@@ -33,6 +33,23 @@ export const draftFromWorkout = (workout: Workout): WorkoutDraft => ({
   })),
 });
 
+// Same exercises and sets under new ids, dated today: the log has no future dates.
+export const draftFromRepeat = (workout: Workout): WorkoutDraft => ({
+  date: todayLocal(),
+  notes: "",
+  entries: workout.entries.map((entry) => ({
+    id: newId(),
+    exerciseId: entry.exerciseId,
+    ...(entry.exerciseName ? { exerciseName: entry.exerciseName } : {}),
+    ...(entry.muscleGroup ? { muscleGroup: entry.muscleGroup } : {}),
+    sets: entry.sets.map((set) => ({
+      id: newId(),
+      weight: String(set.weight),
+      reps: String(set.reps),
+    })),
+  })),
+});
+
 export interface SetFieldErrors {
   weight: string | null;
   reps: string | null;
