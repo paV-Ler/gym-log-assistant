@@ -19,6 +19,21 @@ export function TimeColumn({ label, options, selected, onSelect }: TimeColumnPro
     // Runs once, on open: later selections must not move the list under the pointer.
   }, []);
 
+  // Inside a dialog the popover sits outside the dialog's scroll lock, which cancels scrolling
+  // anywhere else on the page. Keeping these events from reaching it lets the list scroll.
+  // The listeners are native because React's own run after the lock has already seen the event.
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return undefined;
+    const keepFromScrollLock = (event: Event) => event.stopPropagation();
+    list.addEventListener("wheel", keepFromScrollLock);
+    list.addEventListener("touchmove", keepFromScrollLock);
+    return () => {
+      list.removeEventListener("wheel", keepFromScrollLock);
+      list.removeEventListener("touchmove", keepFromScrollLock);
+    };
+  }, []);
+
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const move = { ArrowDown: 1, ArrowUp: -1 }[event.key];
     const edge = { Home: 0, End: options.length - 1 }[event.key];
