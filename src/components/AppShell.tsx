@@ -1,12 +1,15 @@
 import type { ReactNode } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { MobileNavigation } from "@/components/MobileNavigation";
+import { NextWorkoutNotice } from "@/components/NextWorkoutNotice";
 import { Sidebar } from "@/components/Sidebar";
 import { Wordmark } from "@/components/Wordmark";
 import { cn } from "@/lib/utils";
 
 // Grids of cards can use a wide screen; other pages stay at a readable width.
 const WIDE_PAGES: readonly string[] = ["/dashboard"];
+// The Workout page lists every plan itself, so the reminder would only repeat its first row.
+const WORKOUT_PAGE = "/";
 
 function MobileTopBar() {
   return (
@@ -33,6 +36,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             wide ? "max-w-6xl" : "max-w-4xl",
           )}
         >
+          {pathname !== WORKOUT_PAGE && <NextWorkoutNotice className="mb-6" />}
           {children}
         </div>
       </main>

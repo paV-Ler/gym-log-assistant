@@ -22,7 +22,6 @@ import {
 import type { Exercise, Workout, WorkoutDraft } from "@/types/domain";
 import { DashboardSection } from "./DashboardSection";
 import { MuscleSplit } from "./MuscleSplit";
-import { NextWorkoutNotice } from "./NextWorkoutNotice";
 import { RecentRecords } from "./RecentRecords";
 import { RecentWorkouts } from "./RecentWorkouts";
 import { SummaryTiles } from "./SummaryTiles";
@@ -142,10 +141,9 @@ export function DashboardPage() {
   return (
     <>
       {HEADER}
-      {/* Phones show the notices as one tight group, with the demo note last. */}
+      {/* Phones show the notices as one tight group. */}
       <div className="mb-6 grid gap-2 empty:hidden md:gap-6">
         <DemoDataNotice />
-        <NextWorkoutNotice />
         {hasUnfinishedDraft(draft.data) && <DraftNotice />}
       </div>
       {workouts.data.length === 0 ? (

@@ -21,6 +21,7 @@ Single user, English UI, weights in kilograms. All data stays in the browser
 - **Upcoming workouts** — plan a workout for a date and time with its exercises. The
   Workout page counts down to it ("in 2 days", "in 3 hours"); **Start** fills the
   form with the planned exercises, and the plan disappears once the workout is saved.
+  The next planned workout stays above every other page as a reminder.
 - **History** — past workouts grouped by month, with a details page, editing and
   deletion. **Repeat** fills the workout form with the same exercises and sets,
   dated today.

@@ -5,7 +5,7 @@ import { useNow } from "@/hooks/useNow";
 import { usePlannedWorkouts } from "@/hooks/usePlannedWorkouts";
 import { countdown, UNTITLED_PLAN } from "@/lib/planned";
 
-export function NextWorkoutNotice() {
+export function NextWorkoutNotice({ className }: { className?: string }) {
   const { data: plans = [] } = usePlannedWorkouts();
   const now = useNow();
   const next = plans[0];
@@ -13,6 +13,7 @@ export function NextWorkoutNotice() {
 
   return (
     <Notice
+      className={className}
       action={
         <Button asChild variant="link" className="h-auto p-0">
           <Link to="/">Open</Link>

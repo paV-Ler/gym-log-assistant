@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 interface NoticeProps {
   children: ReactNode;
   action: ReactNode;
-  className?: string;
+  className?: string | undefined;
 }
 
 // One row at every width, so a stack of notices does not push the page content off a phone screen.

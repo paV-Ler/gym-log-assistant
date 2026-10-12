@@ -76,7 +76,7 @@ Tokens live in `src/styles.css`; the components below are the only way to use th
 - **Focus.** One style for everything, defined once in `src/styles.css` (2px `ring` outline, 2px offset). Do not add `ring-*` focus classes or remove the outline in a component.
 - **Hover and selection.** Hover is always the neutral `hover` token. The coral `accent` tint means selected or active, never hover.
 - **Change.** A change that is plainly good (more training than last week) uses `positive`; anything else stays muted. Body weight has no good direction, so its arrows are neutral.
-- **Notices and loading.** One-line messages with an action use `Notice`; a loading page shows the `LoadingState` skeleton, never bare text.
+- **Notices and loading.** One-line messages with an action use `Notice`; the next planned workout is shown by the shell above every page except Workout, so pages do not render it themselves; a loading page shows the `LoadingState` skeleton, never bare text.
 - **Charts.** Line charts are filled areas with the shared gradient and take their y-axis from `axisScale`, which gives evenly spaced round ticks.
 - **Buttons.** One filled primary button per page for its main action; `outline` for secondary actions, `ghost` for icon buttons and quiet actions, `destructive` only inside delete confirmations.
 - **Choosing one of a few options** (filters, chart metric): `ChipGroup`, whose selected chip is tinted rather than filled so it does not compete with the primary button.

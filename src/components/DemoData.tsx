@@ -48,7 +48,7 @@ export function DemoDataNotice() {
 
   return (
     <Notice
-      className="order-last text-muted-foreground md:order-none"
+      className="text-muted-foreground"
       action={
         <Button
           variant="link"
