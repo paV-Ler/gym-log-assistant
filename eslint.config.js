@@ -41,6 +41,7 @@ export default tseslint.config(
     files: ["src/**/*.{ts,tsx}"],
     ignores: [
       "src/components/ui/**",
+      "!src/components/ui/{number-input,date-picker,time-picker,time-column,picker-trigger}.tsx",
       "src/routeTree.gen.ts",
       "src/hooks/use-mobile.tsx",
       "src/lib/utils.ts",
@@ -56,7 +57,7 @@ export default tseslint.config(
   },
   {
     // No components here, so every function is an arrow function.
-    files: ["src/{lib,data,hooks}/**/*.{ts,tsx}"],
+    files: ["src/{lib,data,hooks}/**/*.{ts,tsx}", "src/components/**/*.ts"],
     ignores: [
       "src/hooks/use-mobile.tsx",
       "src/lib/utils.ts",

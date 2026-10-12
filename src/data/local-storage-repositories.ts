@@ -131,6 +131,9 @@ class LocalExerciseRepository implements ExerciseRepository {
   }
 }
 
+const withoutEmptyNotes = <T extends { notes?: string }>({ notes, ...rest }: T) =>
+  (notes ? { ...rest, notes } : rest) as T;
+
 class LocalWorkoutRepository implements WorkoutRepository {
   async list(): Promise<Workout[]> {
     return loadWorkouts().sort(
@@ -144,7 +147,12 @@ class LocalWorkoutRepository implements WorkoutRepository {
 
   async create(data: NewWorkout): Promise<Workout> {
     const now = new Date().toISOString();
-    const workout: Workout = { ...data, id: newId(), createdAt: now, updatedAt: now };
+    const workout: Workout = withoutEmptyNotes({
+      ...data,
+      id: newId(),
+      createdAt: now,
+      updatedAt: now,
+    });
     writeList(WORKOUTS_KEY, [...loadWorkouts(), workout]);
     return workout;
   }
@@ -155,7 +163,11 @@ class LocalWorkoutRepository implements WorkoutRepository {
     const current = workouts[index];
     if (!current) throw new Error(`Workout ${id} not found`);
 
-    const updated: Workout = { ...current, ...data, updatedAt: new Date().toISOString() };
+    const updated: Workout = withoutEmptyNotes({
+      ...current,
+      ...data,
+      updatedAt: new Date().toISOString(),
+    });
     workouts[index] = updated;
     writeList(WORKOUTS_KEY, workouts);
     return updated;

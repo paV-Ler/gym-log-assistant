@@ -1,89 +1,12 @@
 import { useState } from "react";
-import { Search } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useExercises } from "@/hooks/useExercises";
-import { cn } from "@/lib/utils";
-import { groupExercises, type ExerciseGroup } from "@/lib/workout";
+import { groupExercises } from "@/lib/workout";
 import type { Exercise } from "@/types/domain";
-
-interface SearchFieldProps {
-  value: string;
-  onChange: (value: string) => void;
-  autoFocus?: boolean;
-}
-
-function SearchField({ value, onChange, autoFocus = false }: SearchFieldProps) {
-  return (
-    <div className="relative">
-      <Search
-        aria-hidden="true"
-        className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-      />
-      <Input
-        autoFocus={autoFocus}
-        aria-label="Search exercises"
-        placeholder="Search exercises"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="pl-10"
-      />
-    </div>
-  );
-}
-
-function ListMessage({ role, children }: { role?: "status" | "alert"; children: string }) {
-  return (
-    <p role={role} className="py-8 text-center text-sm text-muted-foreground">
-      {children}
-    </p>
-  );
-}
-
-interface ExerciseListProps {
-  groups: ExerciseGroup[];
-  addedIds: Set<string>;
-  onSelect: (exercise: Exercise) => void;
-  rowClassName?: string;
-}
-
-function ExerciseList({ groups, addedIds, onSelect, rowClassName }: ExerciseListProps) {
-  const { isPending, isError } = useExercises();
-  if (isPending) return <ListMessage role="status">Loading exercises…</ListMessage>;
-  if (isError) return <ListMessage role="alert">Could not load exercises.</ListMessage>;
-  if (groups.length === 0) return <ListMessage>No exercises found.</ListMessage>;
-
-  return groups.map(({ muscleGroup, items }) => (
-    <div key={muscleGroup}>
-      <h3 className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {muscleGroup}
-      </h3>
-      <ul>
-        {items.map((exercise) => {
-          const added = addedIds.has(exercise.id);
-          return (
-            <li key={exercise.id}>
-              <button
-                type="button"
-                disabled={added}
-                onClick={() => onSelect(exercise)}
-                className={cn(
-                  "flex w-full items-center justify-between rounded-md px-2 py-2 text-left text-sm transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-40",
-                  rowClassName,
-                )}
-              >
-                {exercise.name}
-                {added && <span className="text-xs text-muted-foreground">Added</span>}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  ));
-}
+import { ExerciseList } from "./ExerciseList";
+import { ExerciseSearchField } from "./ExerciseSearchField";
 
 interface ExercisePickerProps {
   title: string;
@@ -124,7 +47,7 @@ export function ExercisePicker({
           </DrawerHeader>
           <div className="shrink-0 px-4 pb-3">
             {/* No autofocus: it would open the keyboard over the list. */}
-            <SearchField value={search} onChange={setSearch} />
+            <ExerciseSearchField value={search} onChange={setSearch} />
           </div>
           <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-4 pb-4">
             <ExerciseList
@@ -145,7 +68,7 @@ export function ExercisePicker({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <SearchField value={search} onChange={setSearch} autoFocus />
+        <ExerciseSearchField value={search} onChange={setSearch} autoFocus />
         <div className="max-h-[55vh] space-y-5 overflow-y-auto pr-1">
           <ExerciseList groups={groups} addedIds={addedIds} onSelect={handleSelect} />
         </div>

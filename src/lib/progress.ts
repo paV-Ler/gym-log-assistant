@@ -121,15 +121,17 @@ export const loggedExercises = (
 };
 
 // `excludeWorkoutId` keeps a workout being edited from competing with its own saved version.
-export const bestLoggedE1RM = (
+export const bestLoggedE1RMByExercise = (
   workouts: readonly Workout[],
-  exerciseId: string,
   excludeWorkoutId?: string,
-): number => {
-  const sets = workouts
-    .filter((workout) => workout.id !== excludeWorkoutId)
-    .flatMap((workout) => workout.entries)
-    .filter((entry) => entry.exerciseId === exerciseId)
-    .flatMap((entry) => entry.sets);
-  return bestEpley1RM(sets);
+): Map<string, number> => {
+  const best = new Map<string, number>();
+  for (const workout of workouts) {
+    if (workout.id === excludeWorkoutId) continue;
+    for (const entry of workout.entries) {
+      const estimate = bestEpley1RM(entry.sets);
+      if (estimate > (best.get(entry.exerciseId) ?? 0)) best.set(entry.exerciseId, estimate);
+    }
+  }
+  return best;
 };

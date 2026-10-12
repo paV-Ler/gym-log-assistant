@@ -1,14 +1,15 @@
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { useCreatePlannedWorkout } from "@/hooks/usePlannedWorkouts";
-import { isIsoDate, isTimeOfDay, tomorrowLocal } from "@/lib/date";
+import { isIsoDate, isTimeOfDay, todayLocal, tomorrowLocal } from "@/lib/date";
+import { exerciseSnapshot } from "@/lib/draft";
 import type { Exercise, PlannedExercise } from "@/types/domain";
 
 const DEFAULT_TIME = "18:00";
 
 export const usePlanWorkoutForm = (onPlanned: () => void) => {
   const create = useCreatePlannedWorkout();
-  const [date, setDate] = useState(tomorrowLocal);
+  const [pickedDate, setDate] = useState(tomorrowLocal);
   const [time, setTime] = useState(DEFAULT_TIME);
   const [title, setTitle] = useState("");
   const [exercises, setExercises] = useState<PlannedExercise[]>([]);
@@ -16,6 +17,10 @@ export const usePlanWorkoutForm = (onPlanned: () => void) => {
   const [timeError, setTimeError] = useState("");
   const [exercisesError, setExercisesError] = useState("");
   const [saveError, setSaveError] = useState("");
+
+  // The dialog stays mounted, so a date picked days ago can have slipped into the past.
+  const today = todayLocal();
+  const date = pickedDate >= today ? pickedDate : tomorrowLocal();
 
   const clearErrors = () => {
     setTimeError("");
@@ -37,14 +42,7 @@ export const usePlanWorkoutForm = (onPlanned: () => void) => {
   };
 
   const addExercise = (exercise: Exercise) => {
-    setExercises((current) => [
-      ...current,
-      {
-        exerciseId: exercise.id,
-        exerciseName: exercise.name,
-        muscleGroup: exercise.muscleGroup,
-      },
-    ]);
+    setExercises((current) => [...current, exerciseSnapshot(exercise)]);
     setExercisesError("");
     setPickerOpen(false);
   };
@@ -72,6 +70,7 @@ export const usePlanWorkoutForm = (onPlanned: () => void) => {
   };
 
   return {
+    today,
     date,
     setDate,
     time,
@@ -88,6 +87,7 @@ export const usePlanWorkoutForm = (onPlanned: () => void) => {
     exercisesError,
     saveError,
     saving: create.isPending,
+    clearErrors,
     submit,
   };
 };

@@ -13,7 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TimePicker } from "@/components/ui/time-picker";
-import { todayLocal } from "@/lib/date";
 import { PLAN_TITLE_MAX_LENGTH } from "@/lib/limits";
 import { ExercisePicker } from "./ExercisePicker";
 import { usePlanWorkoutForm } from "./usePlanWorkoutForm";
@@ -26,9 +25,14 @@ interface PlanWorkoutDialogProps {
 export function PlanWorkoutDialog({ open, onOpenChange }: PlanWorkoutDialogProps) {
   const form = usePlanWorkoutForm(() => onOpenChange(false));
 
+  const handleOpenChange = (next: boolean) => {
+    onOpenChange(next);
+    if (!next) form.clearErrors();
+  };
+
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Plan a workout</DialogTitle>
@@ -42,7 +46,7 @@ export function PlanWorkoutDialog({ open, onOpenChange }: PlanWorkoutDialogProps
                 <Label htmlFor="plan-date">Date</Label>
                 <DatePicker
                   id="plan-date"
-                  min={todayLocal()}
+                  min={form.today}
                   value={form.date}
                   onChange={form.setDate}
                 />
@@ -111,7 +115,7 @@ export function PlanWorkoutDialog({ open, onOpenChange }: PlanWorkoutDialogProps
 
             {form.saveError && <FormAlert>{form.saveError}</FormAlert>}
             <DialogFooter className="gap-2">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
                 Cancel
               </Button>
               <Button type="submit" disabled={form.saving}>

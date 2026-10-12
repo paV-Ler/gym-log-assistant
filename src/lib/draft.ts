@@ -7,6 +7,7 @@ import type {
   DraftEntry,
   DraftSet,
   Exercise,
+  PlannedExercise,
   Workout,
   WorkoutDraft,
   WorkoutEntry,
@@ -110,19 +111,23 @@ export const draftRecord = (entry: DraftEntry, previousBest: number): DraftRecor
 
 export const newDraftSet = (weight = "", reps = ""): DraftSet => ({ id: newId(), weight, reps });
 
-export const newDraftEntry = (exercise: Exercise): DraftEntry => ({
-  id: newId(),
+export const exerciseSnapshot = (exercise: Exercise): PlannedExercise => ({
   exerciseId: exercise.id,
   exerciseName: exercise.name,
+  muscleGroup: exercise.muscleGroup,
+});
+
+export const newDraftEntry = (exercise: PlannedExercise): DraftEntry => ({
+  id: newId(),
+  exerciseId: exercise.exerciseId,
+  exerciseName: exercise.exerciseName,
   muscleGroup: exercise.muscleGroup,
   sets: [newDraftSet()],
 });
 
 export const withExercise = (entry: DraftEntry, exercise: Exercise): DraftEntry => ({
   ...entry,
-  exerciseId: exercise.id,
-  exerciseName: exercise.name,
-  muscleGroup: exercise.muscleGroup,
+  ...exerciseSnapshot(exercise),
 });
 
 export const withSetAdded = (entry: DraftEntry, set: DraftSet): DraftEntry => ({

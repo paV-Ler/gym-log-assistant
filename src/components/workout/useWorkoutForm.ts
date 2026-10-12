@@ -12,6 +12,7 @@ import {
   draftFromWorkout,
   draftRecord,
   emptyDraft,
+  exerciseSnapshot,
   hasTypedSets,
   isDraftEmpty,
   newDraftEntry,
@@ -20,7 +21,7 @@ import {
   withExerciseSnapshots,
   workoutDateError,
 } from "@/lib/draft";
-import { bestLoggedE1RM } from "@/lib/progress";
+import { bestLoggedE1RMByExercise } from "@/lib/progress";
 import type { DraftEntry, Exercise, Workout, WorkoutDraft } from "@/types/domain";
 
 interface WorkoutFormOptions {
@@ -70,12 +71,23 @@ export const useWorkoutForm = ({ initial, workout }: WorkoutFormOptions) => {
     () => new Map(exercises.map((exercise) => [exercise.id, exercise])),
     [exercises],
   );
+  // When editing, the saved version of this workout must not count as the record to beat.
+  const bestByExercise = useMemo(
+    () => bestLoggedE1RMByExercise(savedWorkouts, workout?.id),
+    [savedWorkouts, workout?.id],
+  );
   const entries = withExerciseSnapshots(toEntries(draft), exercisesById);
   const dateError = workoutDateError(draft.date, today);
   const saving = createWorkout.isPending || updateWorkout.isPending;
 
   const update = (patch: Partial<WorkoutDraft>) => {
     setDraft((current) => ({ ...current, ...patch }));
+    setFormError("");
+  };
+
+  // Built from the latest entries, so two changes made before a render do not overwrite each other.
+  const updateEntries = (change: (entries: DraftEntry[]) => DraftEntry[]) => {
+    setDraft((current) => ({ ...current, entries: change(current.entries) }));
     setFormError("");
   };
 
@@ -91,20 +103,21 @@ export const useWorkoutForm = ({ initial, workout }: WorkoutFormOptions) => {
   };
 
   const selectExercise = (exercise: Exercise) => {
-    const nextEntries = changingEntryId
-      ? draft.entries.map((entry) =>
-          entry.id === changingEntryId ? withExercise(entry, exercise) : entry,
-        )
-      : [...draft.entries, newDraftEntry(exercise)];
-    update({ entries: nextEntries });
+    updateEntries((current) =>
+      changingEntryId
+        ? current.map((entry) =>
+            entry.id === changingEntryId ? withExercise(entry, exercise) : entry,
+          )
+        : [...current, newDraftEntry(exerciseSnapshot(exercise))],
+    );
     setPickerOpen(false);
   };
 
   const changeEntry = (next: DraftEntry) =>
-    update({ entries: draft.entries.map((entry) => (entry.id === next.id ? next : entry)) });
+    updateEntries((current) => current.map((entry) => (entry.id === next.id ? next : entry)));
 
   const removeEntry = (entryId: string) =>
-    update({ entries: draft.entries.filter((entry) => entry.id !== entryId) });
+    updateEntries((current) => current.filter((entry) => entry.id !== entryId));
 
   const openSaved = (workoutId: string) =>
     navigate({ to: "/history/$workoutId", params: { workoutId } });
@@ -119,11 +132,10 @@ export const useWorkoutForm = ({ initial, workout }: WorkoutFormOptions) => {
   };
 
   const saveNew = async () => {
-    const notes = draft.notes.trim();
     const saved = await createWorkout.mutateAsync({
       date: draft.date,
       entries,
-      ...(notes ? { notes } : {}),
+      notes: draft.notes.trim(),
     });
     await clearDraft.mutateAsync();
     // The plan is done once its workout is logged. A plan that could not be removed
@@ -144,7 +156,6 @@ export const useWorkoutForm = ({ initial, workout }: WorkoutFormOptions) => {
       setFormError(dateError);
       return;
     }
-    if (entries.length === 0) return;
     try {
       if (workout) await saveEdited(workout);
       else await saveNew();
@@ -170,9 +181,7 @@ export const useWorkoutForm = ({ initial, workout }: WorkoutFormOptions) => {
     canDiscard: !isDraftEmpty(draft),
     draftNotSaved: saveDraft.isError,
     exerciseOf: (entry: DraftEntry) => exercisesById.get(entry.exerciseId),
-    // When editing, the saved version of this workout must not count as the record to beat.
-    recordOf: (entry: DraftEntry) =>
-      draftRecord(entry, bestLoggedE1RM(savedWorkouts, entry.exerciseId, workout?.id)),
+    recordOf: (entry: DraftEntry) => draftRecord(entry, bestByExercise.get(entry.exerciseId) ?? 0),
     update,
     changeEntry,
     removeEntry,
