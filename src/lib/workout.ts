@@ -6,6 +6,7 @@ import {
   type WorkoutEntry,
 } from "@/types/domain";
 import { countSets, workoutVolume } from "./calc";
+import { exerciseVideoId } from "./exercise-videos";
 
 export const DELETED_EXERCISE_NAME = "Deleted exercise";
 
@@ -26,7 +27,10 @@ export const exerciseLabel = (
   };
 };
 
+// A default exercise opens its chosen tutorial; a custom one has none, so it opens a search.
 export const exerciseVideoUrl = (name: string): string => {
+  const videoId = exerciseVideoId(name);
+  if (videoId) return `https://www.youtube.com/watch?v=${videoId}`;
   const query = encodeURIComponent(`${name} proper form`);
   return `https://www.youtube.com/results?search_query=${query}`;
 };

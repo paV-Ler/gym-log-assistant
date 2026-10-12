@@ -25,8 +25,8 @@ Single user, English UI, weights in kilograms. All data stays in the browser
   deletion. **Repeat** fills the workout form with the same exercises and sets,
   dated today.
 - **Exercises** — a library of default exercises in six muscle groups, with search,
-  a group filter and your own custom exercises. Every exercise links to videos that
-  show how to do it.
+  a group filter and your own custom exercises. Every default exercise links to a YouTube
+  tutorial that shows how to do it; a custom exercise opens a YouTube search.
 - **Progress** — per exercise: personal records, a chart of top weight, estimated
   1RM or volume over time, and a table of every session.
 - **Body weight** — a log with one entry per day, the change since the previous entry

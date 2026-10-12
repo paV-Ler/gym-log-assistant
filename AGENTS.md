@@ -52,6 +52,7 @@ below are the conventions to keep when changing code.
 - Treat workout dates as local `yyyy-MM-dd` strings and go through `src/lib/date.ts`; never use `new Date(string)` or `toISOString()` on them.
 - Take validation limits from `src/lib/limits.ts` instead of repeating the numbers.
 - Compute volume and set counts with the helpers in `src/lib/calc.ts`.
+- A default exercise has a tutorial video id in `src/lib/exercise-videos.ts`; add one when adding a default exercise. Custom exercises fall back to a YouTube search.
 
 ## UI
 
