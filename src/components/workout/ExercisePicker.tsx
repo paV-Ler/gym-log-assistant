@@ -42,7 +42,7 @@ export function ExercisePicker({
   const mobile = useIsMobile();
   const selectedIds = multiple ? picker.selectedIds : undefined;
   const selection = multiple && (
-    <SelectedExercises exercises={picker.selected} onRemove={picker.remove} />
+    <SelectedExercises exercises={picker.selected} onRemove={picker.remove} onMove={picker.move} />
   );
   const cancel = (
     <Button type="button" variant="outline" onClick={() => picker.changeOpen(false)}>

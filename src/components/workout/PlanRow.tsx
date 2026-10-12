@@ -1,4 +1,4 @@
-import { Play, Trash2 } from "lucide-react";
+import { Pencil, Play, Trash2 } from "lucide-react";
 import { Hint } from "@/components/Hint";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,10 +12,11 @@ interface PlanRowProps {
   now: Date;
   inProgress: boolean;
   onStart: () => void;
+  onEdit: () => void;
   onDelete: () => void;
 }
 
-export function PlanRow({ plan, now, inProgress, onStart, onDelete }: PlanRowProps) {
+export function PlanRow({ plan, now, inProgress, onStart, onEdit, onDelete }: PlanRowProps) {
   const { due, label } = countdown(plan, now);
   const title = plan.title ?? UNTITLED_PLAN;
   return (
@@ -42,6 +43,20 @@ export function PlanRow({ plan, now, inProgress, onStart, onDelete }: PlanRowPro
           <Button size="sm" variant="outline" onClick={onStart}>
             <Play /> Start
           </Button>
+        )}
+        {/* A started plan was copied into the workout, so editing it would change nothing. */}
+        {!inProgress && (
+          <Hint label="Edit plan">
+            <Button
+              size="icon"
+              variant="ghost"
+              aria-label={`Edit planned workout ${title}`}
+              onClick={onEdit}
+              className="text-muted-foreground"
+            >
+              <Pencil />
+            </Button>
+          </Hint>
         )}
         <Hint label="Delete plan">
           <Button

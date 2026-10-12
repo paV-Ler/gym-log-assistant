@@ -1,5 +1,6 @@
-import { Plus, X } from "lucide-react";
+import { Plus } from "lucide-react";
 import { FieldError, FormAlert } from "@/components/FormMessages";
+import { SortableList } from "@/components/SortableList";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
 import {
@@ -14,16 +15,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TimePicker } from "@/components/ui/time-picker";
 import { PLAN_TITLE_MAX_LENGTH } from "@/lib/limits";
+import type { PlannedWorkout } from "@/types/domain";
 import { ExercisePicker } from "./ExercisePicker";
+import { PlannedExerciseRow } from "./PlannedExerciseRow";
 import { usePlanWorkoutForm } from "./usePlanWorkoutForm";
 
 interface PlanWorkoutDialogProps {
+  // The plan to edit; leave out to plan a new workout.
+  plan?: PlannedWorkout;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function PlanWorkoutDialog({ open, onOpenChange }: PlanWorkoutDialogProps) {
-  const form = usePlanWorkoutForm(() => onOpenChange(false));
+export function PlanWorkoutDialog({ plan, open, onOpenChange }: PlanWorkoutDialogProps) {
+  const form = usePlanWorkoutForm({ plan, onSaved: () => onOpenChange(false) });
 
   const handleOpenChange = (next: boolean) => {
     onOpenChange(next);
@@ -35,7 +40,7 @@ export function PlanWorkoutDialog({ open, onOpenChange }: PlanWorkoutDialogProps
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Plan a workout</DialogTitle>
+            <DialogTitle>{form.editing ? "Edit planned workout" : "Plan a workout"}</DialogTitle>
             <DialogDescription>
               It counts in your statistics only after you log its sets.
             </DialogDescription>
@@ -81,26 +86,21 @@ export function PlanWorkoutDialog({ open, onOpenChange }: PlanWorkoutDialogProps
                 <p>Exercises</p>
               </Label>
               {form.exercises.length > 0 && (
-                <ul className="divide-y divide-border rounded-md border border-border">
-                  {form.exercises.map((exercise) => (
-                    <li
-                      key={exercise.exerciseId}
-                      className="flex items-center justify-between gap-2 py-1 pl-3 pr-1 text-sm"
-                    >
-                      <span className="min-w-0 break-words">{exercise.exerciseName}</span>
-                      <Button
-                        type="button"
-                        size="icon"
-                        variant="ghost"
-                        aria-label={`Remove ${exercise.exerciseName}`}
-                        onClick={() => form.removeExercise(exercise.exerciseId)}
-                        className="shrink-0 text-muted-foreground hover:text-danger"
-                      >
-                        <X />
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
+                <SortableList
+                  ids={form.exercises.map((exercise) => exercise.exerciseId)}
+                  layout="vertical"
+                  onMove={form.moveExercise}
+                >
+                  <ul className="divide-y divide-border rounded-md border border-border">
+                    {form.exercises.map((exercise) => (
+                      <PlannedExerciseRow
+                        key={exercise.exerciseId}
+                        exercise={exercise}
+                        onRemove={() => form.removeExercise(exercise.exerciseId)}
+                      />
+                    ))}
+                  </ul>
+                </SortableList>
               )}
               <Button
                 type="button"
@@ -119,7 +119,7 @@ export function PlanWorkoutDialog({ open, onOpenChange }: PlanWorkoutDialogProps
                 Cancel
               </Button>
               <Button type="submit" disabled={form.saving}>
-                Plan workout
+                {form.editing ? "Save changes" : "Plan workout"}
               </Button>
             </DialogFooter>
           </form>

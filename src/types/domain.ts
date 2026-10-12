@@ -116,6 +116,7 @@ export type NewPlannedWorkout = Omit<PlannedWorkout, "id" | "createdAt">;
 export interface PlannedWorkoutRepository {
   list(): Promise<PlannedWorkout[]>;
   create(data: NewPlannedWorkout): Promise<PlannedWorkout>;
+  update(id: string, data: NewPlannedWorkout): Promise<PlannedWorkout>;
   delete(id: string): Promise<void>;
 }
 

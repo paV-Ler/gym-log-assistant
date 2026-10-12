@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { arrayMove } from "@dnd-kit/sortable";
 import { useExercises } from "@/hooks/useExercises";
 import { groupExercises } from "@/lib/workout";
 import type { Exercise } from "@/types/domain";
@@ -27,6 +28,8 @@ export const useExercisePicker = ({ multiple, onOpenChange, onSelect }: Exercise
 
   const remove = (exerciseId: string) =>
     setSelected((current) => current.filter((item) => item.id !== exerciseId));
+
+  const move = (from: number, to: number) => setSelected((current) => arrayMove(current, from, to));
 
   const pick = (exercise: Exercise) => {
     if (!multiple) {
@@ -60,6 +63,7 @@ export const useExercisePicker = ({ multiple, onOpenChange, onSelect }: Exercise
     changeOpen,
     pick,
     remove,
+    move,
     confirm,
   };
 };

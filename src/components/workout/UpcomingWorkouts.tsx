@@ -24,6 +24,15 @@ export function UpcomingWorkouts({ activePlanId, onStart }: UpcomingWorkoutsProp
   const now = useNow();
   const [planning, setPlanning] = useState(false);
   const [deleting, setDeleting] = useState<PlannedWorkout | null>(null);
+  // The plan stays set while the dialog closes, so its closing animation still has content.
+  const [editing, setEditing] = useState<{ plan: PlannedWorkout; session: number } | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+
+  const openEdit = (plan: PlannedWorkout) => {
+    // A new session remounts the dialog, dropping what an earlier, cancelled edit left in it.
+    setEditing((current) => ({ plan, session: (current?.session ?? 0) + 1 }));
+    setEditOpen(true);
+  };
 
   const confirmDelete = async () => {
     if (!deleting) return;
@@ -59,6 +68,7 @@ export function UpcomingWorkouts({ activePlanId, onStart }: UpcomingWorkoutsProp
               now={now}
               inProgress={plan.id === activePlanId}
               onStart={() => onStart(plan)}
+              onEdit={() => openEdit(plan)}
               onDelete={() => setDeleting(plan)}
             />
           ))}
@@ -66,6 +76,14 @@ export function UpcomingWorkouts({ activePlanId, onStart }: UpcomingWorkoutsProp
       )}
 
       <PlanWorkoutDialog open={planning} onOpenChange={setPlanning} />
+      {editing && (
+        <PlanWorkoutDialog
+          key={editing.session}
+          plan={editing.plan}
+          open={editOpen}
+          onOpenChange={setEditOpen}
+        />
+      )}
       <ConfirmDialog
         open={!!deleting}
         onOpenChange={(open) => {

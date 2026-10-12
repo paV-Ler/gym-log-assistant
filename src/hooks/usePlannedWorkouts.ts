@@ -18,6 +18,15 @@ export const useCreatePlannedWorkout = () => {
   });
 };
 
+export const useUpdatePlannedWorkout = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: NewPlannedWorkout }) =>
+      plannedWorkoutRepository.update(id, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: plannedWorkoutsKey }),
+  });
+};
+
 export const useDeletePlannedWorkout = () => {
   const queryClient = useQueryClient();
   return useMutation({

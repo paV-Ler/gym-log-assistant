@@ -1,18 +1,26 @@
 import { useState, type FormEvent } from "react";
+import { arrayMove } from "@dnd-kit/sortable";
 import { toast } from "sonner";
-import { useCreatePlannedWorkout } from "@/hooks/usePlannedWorkouts";
+import { useCreatePlannedWorkout, useUpdatePlannedWorkout } from "@/hooks/usePlannedWorkouts";
 import { isIsoDate, isTimeOfDay, todayLocal, tomorrowLocal } from "@/lib/date";
 import { exerciseSnapshot } from "@/lib/draft";
-import type { Exercise, PlannedExercise } from "@/types/domain";
+import type { Exercise, PlannedExercise, PlannedWorkout } from "@/types/domain";
 
 const DEFAULT_TIME = "18:00";
 
-export const usePlanWorkoutForm = (onPlanned: () => void) => {
+interface PlanWorkoutFormOptions {
+  // The plan being edited; leave out to plan a new workout.
+  plan?: PlannedWorkout | undefined;
+  onSaved: () => void;
+}
+
+export const usePlanWorkoutForm = ({ plan, onSaved }: PlanWorkoutFormOptions) => {
   const create = useCreatePlannedWorkout();
-  const [pickedDate, setDate] = useState(tomorrowLocal);
-  const [time, setTime] = useState(DEFAULT_TIME);
-  const [title, setTitle] = useState("");
-  const [exercises, setExercises] = useState<PlannedExercise[]>([]);
+  const update = useUpdatePlannedWorkout();
+  const [pickedDate, setDate] = useState(() => plan?.date ?? tomorrowLocal());
+  const [time, setTime] = useState(plan?.time ?? DEFAULT_TIME);
+  const [title, setTitle] = useState(plan?.title ?? "");
+  const [exercises, setExercises] = useState<PlannedExercise[]>(plan?.exercises ?? []);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [timeError, setTimeError] = useState("");
   const [exercisesError, setExercisesError] = useState("");
@@ -50,6 +58,9 @@ export const usePlanWorkoutForm = (onPlanned: () => void) => {
   const removeExercise = (exerciseId: string) =>
     setExercises((current) => current.filter((item) => item.exerciseId !== exerciseId));
 
+  const moveExercise = (from: number, to: number) =>
+    setExercises((current) => arrayMove(current, from, to));
+
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     clearErrors();
@@ -59,17 +70,25 @@ export const usePlanWorkoutForm = (onPlanned: () => void) => {
     if (!validTime || exercises.length === 0 || !isIsoDate(date)) return;
 
     const name = title.trim();
+    const data = { date, time, exercises, ...(name ? { title: name } : {}) };
     try {
-      await create.mutateAsync({ date, time, exercises, ...(name ? { title: name } : {}) });
-      toast.success("Workout planned");
-      onPlanned();
-      reset();
+      if (plan) {
+        await update.mutateAsync({ id: plan.id, data });
+        toast.success("Plan updated");
+        onSaved();
+      } else {
+        await create.mutateAsync(data);
+        toast.success("Workout planned");
+        onSaved();
+        reset();
+      }
     } catch (cause) {
-      setSaveError(cause instanceof Error ? cause.message : "Could not plan workout. Try again.");
+      setSaveError(cause instanceof Error ? cause.message : "Could not save the plan. Try again.");
     }
   };
 
   return {
+    editing: !!plan,
     today,
     date,
     setDate,
@@ -80,13 +99,14 @@ export const usePlanWorkoutForm = (onPlanned: () => void) => {
     exercises,
     addExercises,
     removeExercise,
+    moveExercise,
     addedIds: new Set(exercises.map((exercise) => exercise.exerciseId)),
     pickerOpen,
     setPickerOpen,
     timeError,
     exercisesError,
     saveError,
-    saving: create.isPending,
+    saving: create.isPending || update.isPending,
     clearErrors,
     submit,
   };

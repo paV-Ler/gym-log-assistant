@@ -231,6 +231,12 @@ export const bodyWeightRepository: BodyWeightRepository = new LocalBodyWeightRep
 const loadPlannedWorkouts = (): PlannedWorkout[] =>
   readList<PlannedWorkout>(PLANNED_WORKOUTS_KEY, plannedWorkoutSchema);
 
+const assertValidPlan = (data: NewPlannedWorkout): void => {
+  if (!isIsoDate(data.date)) throw new Error("Pick a valid date.");
+  if (!isTimeOfDay(data.time)) throw new Error("Pick a valid time.");
+  if (data.exercises.length === 0) throw new Error("Add at least one exercise.");
+};
+
 class LocalPlannedWorkoutRepository implements PlannedWorkoutRepository {
   async list(): Promise<PlannedWorkout[]> {
     return loadPlannedWorkouts().sort(
@@ -239,12 +245,24 @@ class LocalPlannedWorkoutRepository implements PlannedWorkoutRepository {
   }
 
   async create(data: NewPlannedWorkout): Promise<PlannedWorkout> {
-    if (!isIsoDate(data.date)) throw new Error("Pick a valid date.");
-    if (!isTimeOfDay(data.time)) throw new Error("Pick a valid time.");
-    if (data.exercises.length === 0) throw new Error("Add at least one exercise.");
+    assertValidPlan(data);
     const plan: PlannedWorkout = { ...data, id: newId(), createdAt: new Date().toISOString() };
     writeList(PLANNED_WORKOUTS_KEY, [...loadPlannedWorkouts(), plan]);
     return plan;
+  }
+
+  async update(id: string, data: NewPlannedWorkout): Promise<PlannedWorkout> {
+    assertValidPlan(data);
+    const plans = loadPlannedWorkouts();
+    const index = plans.findIndex((plan) => plan.id === id);
+    const current = plans[index];
+    if (!current) throw new Error("This plan no longer exists.");
+
+    // Built from the new data alone, so a title that was cleared does not survive.
+    const updated: PlannedWorkout = { ...data, id, createdAt: current.createdAt };
+    plans[index] = updated;
+    writeList(PLANNED_WORKOUTS_KEY, plans);
+    return updated;
   }
 
   async delete(id: string): Promise<void> {
