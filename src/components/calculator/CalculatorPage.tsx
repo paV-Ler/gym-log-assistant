@@ -68,7 +68,9 @@ export function CalculatorPage() {
       </Surface>
 
       {valid ? (
-        <div className="mt-6">$1</div>
+        <div className="mt-6">
+          <StatTile label="Estimated 1RM (Epley)" value={`${formatFixed(epley)} kg`} emphasis />
+        </div>
       ) : (
         <Surface as="section" className="mt-6">
           <p className="py-6 text-center text-sm text-muted-foreground">
