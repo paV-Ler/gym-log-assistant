@@ -32,7 +32,7 @@ Single user, English UI, weights in kilograms. All data stays in the browser
   1RM or volume over time, and a table of every session.
 - **Body weight** — a log with one entry per day, the change since the previous entry
   and over 30 days, and a trend chart.
-- **1RM Calculator** — Epley and Brzycki estimates with a percentage table.
+- **1RM Calculator** — Epley estimate with a percentage table.
 - **Demo data** — one button fills the app with three months of sample training, body
   weight and two planned workouts; another removes it and leaves your own records.
 
@@ -158,8 +158,7 @@ Stored under versioned keys: `gymlog.v1.exercises`, `gymlog.v1.workouts`,
   library values win when displaying, but a workout stays readable after its exercise
   is deleted.
 - **Weeks start on Monday** everywhere: the dashboard, the streak and the calendar.
-- **Estimated 1RM uses the Epley formula** for records and progress. The calculator
-  also shows Brzycki for comparison.
+- **Estimated 1RM uses the Epley formula** for records, progress and the calculator.
 - **A personal record is a new best estimated 1RM.** The workout form compares each
   set with every other saved workout of that exercise. The first session of an
   exercise has nothing to beat, so the form does not flag it.

@@ -5,7 +5,7 @@ import { StatTile } from "@/components/StatTile";
 import { Surface } from "@/components/Surface";
 import { Label } from "@/components/ui/label";
 import { NumberInput } from "@/components/ui/number-input";
-import { brzycki1RM, epley1RM } from "@/lib/calc";
+import { epley1RM } from "@/lib/calc";
 import { REPS_INPUT_MAX_LENGTH, WEIGHT_INPUT_MAX_LENGTH } from "@/lib/limits";
 import { formatFixed, parseDecimal, parseInteger } from "@/lib/number";
 import { PercentageTable } from "./PercentageTable";
@@ -20,7 +20,6 @@ export function CalculatorPage() {
   const reps = parseInteger(repsInput);
   const valid = weight > 0 && reps > 0;
   const epley = valid ? epley1RM(weight, reps) : 0;
-  const brzycki = valid ? brzycki1RM(weight, reps) : 0;
 
   return (
     <>
@@ -69,10 +68,7 @@ export function CalculatorPage() {
       </Surface>
 
       {valid ? (
-        <div className="mt-6 grid grid-cols-2 gap-3 md:gap-4">
-          <StatTile label="Estimated 1RM (Epley)" value={`${formatFixed(epley)} kg`} emphasis />
-          <StatTile label="Brzycki" value={`${formatFixed(brzycki)} kg`} />
-        </div>
+        <div className="mt-6">$1</div>
       ) : (
         <Surface as="section" className="mt-6">
           <p className="py-6 text-center text-sm text-muted-foreground">

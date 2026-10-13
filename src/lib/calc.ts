@@ -7,14 +7,6 @@ export const epley1RM = (weight: number, reps: number): number => {
   return weight * (1 + reps / 30);
 };
 
-// weight × 36 / (37 − reps)
-export const brzycki1RM = (weight: number, reps: number): number => {
-  if (!isFinite(weight) || !isFinite(reps) || weight <= 0 || reps <= 0) return 0;
-  if (reps === 1) return weight;
-  if (reps >= 37) return 0;
-  return (weight * 36) / (37 - reps);
-};
-
 export const bestEpley1RM = (sets: readonly WorkoutSet[]): number =>
   Math.max(0, ...sets.map((set) => epley1RM(set.weight, set.reps)));
 

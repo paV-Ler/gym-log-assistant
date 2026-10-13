@@ -6,7 +6,7 @@ export const Route = createFileRoute("/calculator")({
   head: () => ({
     meta: pageMeta(
       "1RM Calculator",
-      "Estimate your one-rep max with the Epley and Brzycki formulas and see a full percentage table.",
+      "Estimate your one-rep max with the Epley formula and see a full percentage table.",
     ),
   }),
   component: CalculatorPage,
