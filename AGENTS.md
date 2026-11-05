@@ -42,7 +42,7 @@ below are the conventions to keep when changing code.
 - Read and write storage only through `src/data/storage.ts`. Give every stored type a zod schema in `src/data/schemas.ts` and pass it to `readList` / `readObject`.
 - Use `writeList` / `writeItem` for anything the user asked to save, so a failure reaches the UI as `StorageWriteError`; use the `tryWrite…` variants only for housekeeping done while reading.
 - A planned workout (`PlannedWorkout`) is not a workout: it has no sets and must never be counted in statistics, records or the calendar. Do not allow future dates in the log itself.
-- Sample records get an id starting with `demo-` (`src/data/demo-data.ts`). Removing demo data deletes by that prefix only, so never give a user-created record such an id.
+- Records with an id starting with `demo-` are leftovers of removed sample data and are deleted once by `removeLegacyDemoRecords`, so never give a user-created record such an id.
 - Do not rename the `gymlog.v1.*` storage keys. To drop a default exercise, add it to `REMOVED_DEFAULT_EXERCISES` and bump the migration key.
 
 ## Logic
@@ -52,7 +52,6 @@ below are the conventions to keep when changing code.
 - Treat workout dates as local `yyyy-MM-dd` strings and go through `src/lib/date.ts`; never use `new Date(string)` or `toISOString()` on them.
 - Take validation limits from `src/lib/limits.ts` instead of repeating the numbers.
 - Compute volume and set counts with the helpers in `src/lib/calc.ts`.
-- A default exercise has a tutorial video id in `src/lib/exercise-videos.ts`; add one when adding a default exercise. Custom exercises fall back to a YouTube search.
 
 ## UI
 

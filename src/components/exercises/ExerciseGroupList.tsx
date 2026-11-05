@@ -1,5 +1,4 @@
 import { Trash2 } from "lucide-react";
-import { ExerciseVideoLink } from "@/components/ExerciseVideoLink";
 import { Hint } from "@/components/Hint";
 import { SectionTitle } from "@/components/SectionTitle";
 import { Badge } from "@/components/ui/badge";
@@ -39,7 +38,6 @@ export function ExerciseGroupList({ groups, onDelete }: ExerciseGroupListProps) 
                       Custom
                     </Badge>
                   )}
-                  <ExerciseVideoLink name={exercise.name} />
                   {exercise.isCustom && (
                     <Hint label="Delete exercise">
                       <Button

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ArrowLeftRight, Plus, Trash2 } from "lucide-react";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { ExerciseVideoLink } from "@/components/ExerciseVideoLink";
 import { Hint } from "@/components/Hint";
 import { SectionTitle } from "@/components/SectionTitle";
 import { Surface } from "@/components/Surface";
@@ -67,7 +66,6 @@ export function ExerciseCard({
         className="mb-3"
         action={
           <>
-            <ExerciseVideoLink name={name} />
             <Hint label="Change exercise">
               <Button
                 type="button"

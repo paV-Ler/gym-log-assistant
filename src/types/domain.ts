@@ -119,10 +119,3 @@ export interface PlannedWorkoutRepository {
   update(id: string, data: NewPlannedWorkout): Promise<PlannedWorkout>;
   delete(id: string): Promise<void>;
 }
-
-export interface DemoDataRepository {
-  has(): Promise<boolean>;
-  // Replaces earlier sample records; the user's own are kept.
-  load(): Promise<void>;
-  remove(): Promise<void>;
-}

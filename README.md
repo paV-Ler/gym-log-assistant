@@ -26,15 +26,12 @@ Single user, English UI, weights in kilograms. All data stays in the browser
   deletion. **Repeat** fills the workout form with the same exercises and sets,
   dated today.
 - **Exercises** — a library of default exercises in six muscle groups, with search,
-  a group filter and your own custom exercises. Every default exercise links to a YouTube
-  tutorial that shows how to do it; a custom exercise opens a YouTube search.
+  a group filter and your own custom exercises.
 - **Progress** — per exercise: personal records, a chart of top weight, estimated
   1RM or volume over time, and a table of every session.
 - **Body weight** — a log with one entry per day, the change since the previous entry
   and over 30 days, and a trend chart.
 - **1RM Calculator** — Epley estimate with a percentage table.
-- **Demo data** — one button fills the app with three months of sample training, body
-  weight and two planned workouts; another removes it and leaves your own records.
 
 Works on desktop (sidebar navigation) and on phones (bottom navigation bar).
 
@@ -166,10 +163,6 @@ Stored under versioned keys: `gymlog.v1.exercises`, `gymlog.v1.workouts`,
   lifted, so a planned workout is its own record and never counts in the statistics.
   Starting a plan copies its exercises into the workout form, and only the saved
   workout is counted.
-- **Demo records are marked by their id.** Every sample record has an id starting with
-  `demo-` (`src/data/demo-data.ts`), which is how they are removed without touching
-  the records the user made. The sample is generated relative to today, so it always
-  ends in the current week.
 - **Motion respects the system setting.** Charts draw in and headline figures count
   up from zero, unless the user asked for reduced motion.
 - **The training calendar shades days by number of sets**, relative to the busiest

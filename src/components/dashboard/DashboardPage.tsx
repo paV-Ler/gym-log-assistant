@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import { ClientOnly, Link } from "@tanstack/react-router";
 import { LayoutDashboard } from "lucide-react";
-import { DemoDataNotice, DemoDataOffer, LoadDemoDataButton } from "@/components/DemoData";
 import { EmptyState } from "@/components/EmptyState";
 import { Notice } from "@/components/Notice";
 import { PageHeader } from "@/components/PageHeader";
@@ -104,7 +103,6 @@ function Overview({ workouts, exercises }: OverviewProps) {
           <RecentWorkouts workouts={workouts.slice(0, RECENT_ITEMS)} />
         </DashboardSection>
       </div>
-      <DemoDataOffer />
     </>
   );
 }
@@ -143,7 +141,6 @@ export function DashboardPage() {
       {HEADER}
       {/* Phones show the notices as one tight group. */}
       <div className="mb-6 grid gap-2 empty:hidden md:gap-6">
-        <DemoDataNotice />
         {hasUnfinishedDraft(draft.data) && <DraftNotice />}
       </div>
       {workouts.data.length === 0 ? (
@@ -152,12 +149,9 @@ export function DashboardPage() {
           title="No workouts yet"
           description="Your overview will appear here once you log a workout."
         >
-          <div className="mt-6 flex flex-wrap justify-center gap-2">
-            <Button asChild>
-              <Link to="/">Log your first workout</Link>
-            </Button>
-            <LoadDemoDataButton />
-          </div>
+          <Button asChild className="mt-6">
+            <Link to="/">Log your first workout</Link>
+          </Button>
         </EmptyState>
       ) : (
         <Overview workouts={workouts.data} exercises={exercises.data} />
