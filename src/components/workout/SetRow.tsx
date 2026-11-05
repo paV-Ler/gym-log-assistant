@@ -1,6 +1,5 @@
 import { X } from "lucide-react";
 import { Hint } from "@/components/Hint";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { NumberInput } from "@/components/ui/number-input";
 import type { DraftRecord, SetFieldErrors } from "@/lib/draft";
@@ -12,6 +11,7 @@ import {
   WEIGHT_INPUT_MAX_LENGTH,
 } from "@/lib/limits";
 import { formatNumber } from "@/lib/number";
+import { cn } from "@/lib/utils";
 import type { DraftSet } from "@/types/domain";
 import { weightInputId } from "./set-input-id";
 
@@ -19,6 +19,8 @@ const WEIGHT_STEP_KG = 2.5;
 
 const FIELD_CELL = "py-2 pr-1 md:pr-3";
 const MESSAGE_CELL = "pb-2 pr-1 align-top text-xs md:pr-3";
+// The record set and its caption read as one tinted block with a bar on the left.
+const RECORD_ROW = "bg-accent/60 [&>td:first-child]:shadow-[inset_2px_0_0_var(--color-primary)]";
 
 interface SetRowProps {
   index: number;
@@ -40,10 +42,18 @@ export function SetRow({
   onRepsEnter,
 }: SetRowProps) {
   const number = index + 1;
+  const showRecord = !!record && !errors;
   return (
     <>
-      <tr className="border-t border-border">
-        <td className="tabular w-5 py-2 pl-1 text-sm text-muted-foreground md:w-10">{number}</td>
+      <tr className={cn("border-t border-border", showRecord && RECORD_ROW)}>
+        <td
+          className={cn(
+            "tabular w-5 py-2 pl-1 text-sm md:w-10 md:pl-2",
+            showRecord ? "font-medium text-primary" : "text-muted-foreground",
+          )}
+        >
+          {number}
+        </td>
         <td className={FIELD_CELL}>
           <NumberInput
             id={weightInputId(set.id)}
@@ -104,15 +114,12 @@ export function SetRow({
           <td />
         </tr>
       )}
-      {record && !errors && (
-        <tr>
+      {showRecord && record && (
+        <tr className={RECORD_ROW}>
           <td />
-          <td colSpan={3} role="status" className="pb-2 text-xs text-muted-foreground tabular">
-            <Badge variant="outline" className="mr-2 border-primary/50 text-primary">
-              PR
-            </Badge>
-            Est. 1RM {formatNumber(record.estimate)} kg, previous best{" "}
-            {formatNumber(record.previous)} kg
+          <td colSpan={3} role="status" className="tabular pb-2 text-xs text-muted-foreground">
+            <span className="font-medium text-primary">New record</span> · est. 1RM{" "}
+            {formatNumber(record.estimate)} kg
           </td>
         </tr>
       )}
