@@ -30,7 +30,7 @@ below are the conventions to keep when changing code.
 - Comment only what the code cannot say: why something is done, a consequence to beware of, an outside constraint, or an example of a format. One line where possible. No comment that repeats a name, a signature or a prop type; if a comment is needed to explain a name, rename it instead.
 - No `forwardRef`: in React 19 `ref` is a regular prop.
 - Imports go in this order: `react`, packages, `@/…` sorted by path, then relative.
-- `src/components/ui` holds generated shadcn components; leave their style as generated. The app's own files there (`number-input`, `date-picker`, `time-picker`, `time-column`, `picker-trigger`) follow these rules.
+- `src/components/ui` holds generated shadcn components; leave their style as generated. The app's own files there (`number-input`, `date-picker`, `picker-trigger`) follow these rules.
 
 ## Data
 
@@ -41,7 +41,7 @@ below are the conventions to keep when changing code.
 - Body weight has one entry per day: saving a day that exists replaces it.
 - Read and write storage only through `src/data/storage.ts`. Give every stored type a zod schema in `src/data/schemas.ts` and pass it to `readList` / `readObject`.
 - Use `writeList` / `writeItem` for anything the user asked to save, so a failure reaches the UI as `StorageWriteError`; use the `tryWrite…` variants only for housekeeping done while reading.
-- A planned workout (`PlannedWorkout`) is not a workout: it has no sets and must never be counted in statistics, records or the calendar. Do not allow future dates in the log itself.
+- Do not allow future dates in the log: a workout is what was actually lifted.
 - Records with an id starting with `demo-` are leftovers of removed sample data and are deleted once by `removeLegacyDemoRecords`, so never give a user-created record such an id.
 - Do not rename the `gymlog.v1.*` storage keys. To drop a default exercise, add it to `REMOVED_DEFAULT_EXERCISES` and bump the migration key.
 
@@ -71,11 +71,11 @@ Tokens live in `src/styles.css`; the components below are the only way to use th
 - **Cards.** Never hand-write a card: use `Surface` (`padding="compact"` for one-line notices, `"flush"` when the content pads itself, `interactive` for cards that are a link). Stacked cards are 24px apart (`mb-6` / `mt-6`); tiles in a grid use `gap-4`.
 - **Headings.** `PageHeader` for the page title, `SectionTitle` for every card or section heading (it takes a subtitle and an action). Type scale: page title `text-xl md:text-2xl`, section title `text-base font-semibold`, body `text-sm`, captions `text-xs text-muted-foreground`, headline figures through `StatTile` (`emphasis` for the one result a page exists for, `trend` for a change, `series` for a sparkline behind the figure). The smallest text is `text-2xs` (11px), for calendar and bottom-bar labels only.
 - **Fields.** Inputs, selects and picker triggers are 36px tall on desktop (44px on phones) with the `field` background. Use `fieldSize="lg"` for a page's headline field instead of overriding height or background. Label every field with `Label`.
-- **Pickers.** Dates use `DatePicker`, times use `TimePicker`; both open from `PickerTrigger`, so do not style one without the other. No native `date`, `time` or `number` inputs.
+- **Pickers.** Dates use `DatePicker`, which opens from `PickerTrigger`. No native `date`, `time` or `number` inputs.
 - **Focus.** One style for everything, defined once in `src/styles.css` (2px `ring` outline, 2px offset). Do not add `ring-*` focus classes or remove the outline in a component.
 - **Hover and selection.** Hover is always the neutral `hover` token. The coral `accent` tint means selected or active, never hover.
 - **Change.** A change that is plainly good (more training than last week) uses `positive`; anything else stays muted. Body weight has no good direction, so its arrows are neutral.
-- **Notices and loading.** One-line messages with an action use `Notice`; the next planned workout is shown by the shell above every page except Workout, so pages do not render it themselves; a loading page shows the `LoadingState` skeleton, never bare text.
+- **Notices and loading.** One-line messages with an action use `Notice`; a loading page shows the `LoadingState` skeleton, never bare text.
 - **Charts.** Line charts are filled areas with the shared gradient and take their y-axis from `axisScale`, which gives evenly spaced round ticks.
 - **Buttons.** One filled primary button per page for its main action; `outline` for secondary actions, `ghost` for icon buttons and quiet actions, `destructive` only inside delete confirmations.
 - **Choosing one of a few options** (filters, chart metric): `ChipGroup`, whose selected chip is tinted rather than filled so it does not compete with the primary button.

@@ -70,8 +70,6 @@ export interface WorkoutDraft {
   date: string;
   notes: string;
   entries: DraftEntry[];
-  // Plan this draft was started from; removed once the workout is saved.
-  planId?: string;
 }
 
 export interface DraftRepository {
@@ -94,28 +92,9 @@ export interface BodyWeightRepository {
   delete(id: string): Promise<void>;
 }
 
-export interface PlannedExercise {
+// The exercise fields a workout entry keeps a copy of.
+export interface ExerciseSnapshot {
   exerciseId: string;
   exerciseName: string;
   muscleGroup: MuscleGroup;
-}
-
-// Holds no sets and never counts in the statistics.
-export interface PlannedWorkout {
-  id: string;
-  date: string;
-  // 24-hour HH:mm, local time.
-  time: string;
-  title?: string;
-  exercises: PlannedExercise[];
-  createdAt: string;
-}
-
-export type NewPlannedWorkout = Omit<PlannedWorkout, "id" | "createdAt">;
-
-export interface PlannedWorkoutRepository {
-  list(): Promise<PlannedWorkout[]>;
-  create(data: NewPlannedWorkout): Promise<PlannedWorkout>;
-  update(id: string, data: NewPlannedWorkout): Promise<PlannedWorkout>;
-  delete(id: string): Promise<void>;
 }

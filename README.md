@@ -18,10 +18,6 @@ Single user, English UI, weights in kilograms. All data stays in the browser
   you type. Picked the wrong exercise? Swap it for another and keep the sets you
   entered. An unfinished workout is saved as a draft and restored on the next visit.
   After saving, the saved workout opens.
-- **Upcoming workouts** — plan a workout for a date and time with its exercises. The
-  Workout page counts down to it ("in 2 days", "in 3 hours"); **Start** fills the
-  form with the planned exercises, and the plan disappears once the workout is saved.
-  The next planned workout stays above every other page as a reminder.
 - **History** — past workouts grouped by month, with a details page, editing and
   deletion. **Repeat** fills the workout form with the same exercises and sets,
   dated today.
@@ -83,7 +79,7 @@ src/
   routes/       One file per URL. Routes are thin: page metadata plus the page component.
   components/   UI, one folder per page, plus pieces shared between pages. A form keeps its
                 state and saving in a hook next to it (WorkoutForm.tsx + useWorkoutForm.ts).
-    ui/         shadcn/ui primitives and the app inputs (number-input, date-picker, time-picker).
+    ui/         shadcn/ui primitives and the app inputs (number-input, date-picker).
     charts/     Styling and tooltip shared by the charts.
   hooks/        TanStack Query hooks, the only way components read or change data, and a few
                 small UI hooks (count-up, current time, reduced motion).
@@ -138,11 +134,9 @@ Defined in `src/types/domain.ts`:
 - `WorkoutDraft` — the workout form while it is being filled in. Weight and reps are
   kept as the raw text the user typed and parsed only when saving.
 - `BodyWeightEntry` — body weight in kg for one day.
-- `PlannedWorkout` — a date, a time, an optional title and the exercises to do. It has
-  no sets.
 
 Stored under versioned keys: `gymlog.v1.exercises`, `gymlog.v1.workouts`,
-`gymlog.v1.workout-draft`, `gymlog.v1.body-weight` and `gymlog.v1.planned-workouts`.
+`gymlog.v1.workout-draft` and `gymlog.v1.body-weight`.
 
 ### Decisions worth knowing
 
@@ -159,10 +153,7 @@ Stored under versioned keys: `gymlog.v1.exercises`, `gymlog.v1.workouts`,
 - **A personal record is a new best estimated 1RM.** The workout form compares each
   set with every other saved workout of that exercise. The first session of an
   exercise has nothing to beat, so the form does not flag it.
-- **The log has no future dates; plans are separate.** A workout is what was actually
-  lifted, so a planned workout is its own record and never counts in the statistics.
-  Starting a plan copies its exercises into the workout form, and only the saved
-  workout is counted.
+- **The log has no future dates.** A workout is what was actually lifted.
 - **Motion respects the system setting.** Charts draw in and headline figures count
   up from zero, unless the user asked for reduced motion.
 - **The training calendar shades days by number of sets**, relative to the busiest

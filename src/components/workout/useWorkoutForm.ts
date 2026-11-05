@@ -3,7 +3,6 @@ import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { StorageWriteError } from "@/data";
 import { useExercises } from "@/hooks/useExercises";
-import { useDeletePlannedWorkout } from "@/hooks/usePlannedWorkouts";
 import { useClearWorkoutDraft, useSaveWorkoutDraft } from "@/hooks/useWorkoutDraft";
 import { useCreateWorkout, useUpdateWorkout, useWorkouts } from "@/hooks/useWorkouts";
 import { todayLocal } from "@/lib/date";
@@ -50,7 +49,6 @@ export const useWorkoutForm = ({ initial, workout }: WorkoutFormOptions) => {
   const updateWorkout = useUpdateWorkout();
   const saveDraft = useSaveWorkoutDraft();
   const clearDraft = useClearWorkoutDraft();
-  const deletePlan = useDeletePlannedWorkout();
 
   // Autosave a new workout as the user types, so a reload does not lose it.
   // The first run is skipped: the draft was just loaded and has not changed.
@@ -139,9 +137,6 @@ export const useWorkoutForm = ({ initial, workout }: WorkoutFormOptions) => {
       notes: draft.notes.trim(),
     });
     await clearDraft.mutateAsync();
-    // The plan is done once its workout is logged. A plan that could not be removed
-    // only stays listed, so that failure must not fail the save.
-    if (draft.planId) await deletePlan.mutateAsync(draft.planId).catch(() => undefined);
     toast.success("Workout saved");
     // Show what was just saved; staying on an emptied form looked like nothing happened.
     await openSaved(saved.id);

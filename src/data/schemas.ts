@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { isIsoDate, isTimeOfDay } from "@/lib/date";
+import { isIsoDate } from "@/lib/date";
 import { MUSCLE_GROUPS } from "@/types/domain";
 
 // These guard only against damaged or hand-edited storage; the forms and repositories enforce
@@ -66,20 +66,4 @@ export const workoutDraftSchema = z.object({
   date: z.string(),
   notes: z.string().catch(""),
   entries: z.array(draftEntrySchema),
-  planId: z.string().optional(),
-});
-
-const plannedExerciseSchema = z.object({
-  exerciseId: z.string(),
-  exerciseName: z.string(),
-  muscleGroup,
-});
-
-export const plannedWorkoutSchema = z.object({
-  id: z.string(),
-  date: isoDate,
-  time: z.string().refine(isTimeOfDay),
-  title: z.string().optional(),
-  exercises: z.array(plannedExerciseSchema),
-  createdAt: z.string(),
 });

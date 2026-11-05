@@ -41,7 +41,7 @@ export default tseslint.config(
     files: ["src/**/*.{ts,tsx}"],
     ignores: [
       "src/components/ui/**",
-      "!src/components/ui/{number-input,date-picker,time-picker,time-column,picker-trigger}.tsx",
+      "!src/components/ui/{number-input,date-picker,picker-trigger}.tsx",
       "src/routeTree.gen.ts",
       "src/hooks/use-mobile.tsx",
       "src/lib/utils.ts",

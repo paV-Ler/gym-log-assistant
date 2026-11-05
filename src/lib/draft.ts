@@ -6,8 +6,8 @@ import { parseDecimal, parseInteger } from "@/lib/number";
 import type {
   DraftEntry,
   DraftSet,
+  ExerciseSnapshot,
   Exercise,
-  PlannedExercise,
   Workout,
   WorkoutDraft,
   WorkoutEntry,
@@ -128,13 +128,13 @@ export const draftRecord = (entry: DraftEntry, previousBest: number): DraftRecor
 
 export const newDraftSet = (weight = "", reps = ""): DraftSet => ({ id: newId(), weight, reps });
 
-export const exerciseSnapshot = (exercise: Exercise): PlannedExercise => ({
+export const exerciseSnapshot = (exercise: Exercise): ExerciseSnapshot => ({
   exerciseId: exercise.id,
   exerciseName: exercise.name,
   muscleGroup: exercise.muscleGroup,
 });
 
-export const newDraftEntry = (exercise: PlannedExercise): DraftEntry => ({
+export const newDraftEntry = (exercise: ExerciseSnapshot): DraftEntry => ({
   id: newId(),
   exerciseId: exercise.exerciseId,
   exerciseName: exercise.exerciseName,

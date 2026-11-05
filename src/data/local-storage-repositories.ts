@@ -1,4 +1,4 @@
-import { isIsoDate, isTimeOfDay } from "@/lib/date";
+import { isIsoDate } from "@/lib/date";
 import { newId } from "@/lib/id";
 import { BODY_WEIGHT_MAX_KG, BODY_WEIGHT_MIN_KG, EXERCISE_NAME_MAX_LENGTH } from "@/lib/limits";
 import { isSameExercise } from "@/lib/workout";
@@ -9,10 +9,7 @@ import type {
   Exercise,
   ExerciseRepository,
   NewExercise,
-  NewPlannedWorkout,
   NewWorkout,
-  PlannedWorkout,
-  PlannedWorkoutRepository,
   Workout,
   WorkoutDraft,
   WorkoutRepository,
@@ -25,7 +22,6 @@ import {
 import {
   bodyWeightEntrySchema,
   exerciseSchema,
-  plannedWorkoutSchema,
   workoutDraftSchema,
   workoutSchema,
 } from "./schemas";
@@ -108,7 +104,6 @@ const removeLegacyDemoRecords = (): void => {
   const lists = [
     [WORKOUTS_KEY, workoutSchema],
     [BODY_WEIGHT_KEY, bodyWeightEntrySchema],
-    [PLANNED_WORKOUTS_KEY, plannedWorkoutSchema],
   ] as const;
   let cleaned = true;
   for (const [key, schema] of lists) {
@@ -119,8 +114,17 @@ const removeLegacyDemoRecords = (): void => {
   if (cleaned) tryWriteItem(DEMO_CLEANUP_KEY, MIGRATION_DONE);
 };
 
+// Planned workouts were removed from the app; their stored list is dropped on the first read.
+let plansForgotten = false;
+const forgetPlannedWorkouts = (): void => {
+  if (plansForgotten) return;
+  plansForgotten = true;
+  removeItem(PLANNED_WORKOUTS_KEY);
+};
+
 const loadWorkouts = (): Workout[] => {
   removeLegacyDemoRecords();
+  forgetPlannedWorkouts();
   return readList<Workout>(WORKOUTS_KEY, workoutSchema);
 };
 
@@ -253,53 +257,3 @@ export const exerciseRepository: ExerciseRepository = new LocalExerciseRepositor
 export const workoutRepository: WorkoutRepository = new LocalWorkoutRepository();
 export const draftRepository: DraftRepository = new LocalDraftRepository();
 export const bodyWeightRepository: BodyWeightRepository = new LocalBodyWeightRepository();
-
-const loadPlannedWorkouts = (): PlannedWorkout[] => {
-  removeLegacyDemoRecords();
-  return readList<PlannedWorkout>(PLANNED_WORKOUTS_KEY, plannedWorkoutSchema);
-};
-
-const assertValidPlan = (data: NewPlannedWorkout): void => {
-  if (!isIsoDate(data.date)) throw new Error("Pick a valid date.");
-  if (!isTimeOfDay(data.time)) throw new Error("Pick a valid time.");
-  if (data.exercises.length === 0) throw new Error("Add at least one exercise.");
-};
-
-class LocalPlannedWorkoutRepository implements PlannedWorkoutRepository {
-  async list(): Promise<PlannedWorkout[]> {
-    return loadPlannedWorkouts().sort(
-      (a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time),
-    );
-  }
-
-  async create(data: NewPlannedWorkout): Promise<PlannedWorkout> {
-    assertValidPlan(data);
-    const plan: PlannedWorkout = { ...data, id: newId(), createdAt: new Date().toISOString() };
-    writeList(PLANNED_WORKOUTS_KEY, [...loadPlannedWorkouts(), plan]);
-    return plan;
-  }
-
-  async update(id: string, data: NewPlannedWorkout): Promise<PlannedWorkout> {
-    assertValidPlan(data);
-    const plans = loadPlannedWorkouts();
-    const index = plans.findIndex((plan) => plan.id === id);
-    const current = plans[index];
-    if (!current) throw new Error("This plan no longer exists.");
-
-    // Built from the new data alone, so a title that was cleared does not survive.
-    const updated: PlannedWorkout = { ...data, id, createdAt: current.createdAt };
-    plans[index] = updated;
-    writeList(PLANNED_WORKOUTS_KEY, plans);
-    return updated;
-  }
-
-  async delete(id: string): Promise<void> {
-    writeList(
-      PLANNED_WORKOUTS_KEY,
-      loadPlannedWorkouts().filter((plan) => plan.id !== id),
-    );
-  }
-}
-
-export const plannedWorkoutRepository: PlannedWorkoutRepository =
-  new LocalPlannedWorkoutRepository();

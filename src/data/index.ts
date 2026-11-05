@@ -4,6 +4,5 @@ export {
   workoutRepository,
   draftRepository,
   bodyWeightRepository,
-  plannedWorkoutRepository,
 } from "./local-storage-repositories";
 export { StorageWriteError } from "./storage";
