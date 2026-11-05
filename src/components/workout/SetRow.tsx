@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import { Hint } from "@/components/Hint";
+import { RECORD_ROW, RECORD_TEXT } from "@/components/record-row";
 import { Button } from "@/components/ui/button";
 import { NumberInput } from "@/components/ui/number-input";
 import type { DraftRecord, SetFieldErrors } from "@/lib/draft";
@@ -19,8 +20,6 @@ const WEIGHT_STEP_KG = 2.5;
 
 const FIELD_CELL = "py-2 pr-1 md:pr-3";
 const MESSAGE_CELL = "pb-2 pr-1 align-top text-xs md:pr-3";
-// The record set and its caption read as one tinted block with a bar on the left.
-const RECORD_ROW = "bg-accent/60 [&>td:first-child]:shadow-[inset_2px_0_0_var(--color-primary)]";
 
 interface SetRowProps {
   index: number;
@@ -49,7 +48,7 @@ export function SetRow({
         <td
           className={cn(
             "tabular w-5 py-2 pl-1 text-sm md:w-10 md:pl-2",
-            showRecord ? "font-medium text-primary" : "text-muted-foreground",
+            showRecord ? RECORD_TEXT : "text-muted-foreground",
           )}
         >
           {number}
@@ -118,7 +117,7 @@ export function SetRow({
         <tr className={RECORD_ROW}>
           <td />
           <td colSpan={3} role="status" className="tabular pb-2 text-xs text-muted-foreground">
-            <span className="font-medium text-primary">New record</span> · est. 1RM{" "}
+            <span className={RECORD_TEXT}>New record</span> · est. 1RM{" "}
             {formatNumber(record.estimate)} kg
           </td>
         </tr>

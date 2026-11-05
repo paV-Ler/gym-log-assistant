@@ -338,7 +338,7 @@
     display: grid;
     grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1fr);
     gap: 4px 8px;
-    padding: 12px 0;
+    padding: 12px;
   }
   .mobile-detail-table td {
     min-width: 0;
@@ -350,6 +350,15 @@
     color: var(--muted-foreground);
     font-size: 12px;
     font-weight: normal;
+  }
+  /* On phones these rows are grids, so the record bar runs along the row, not its first cell. */
+  .mobile-detail-table tr[data-record],
+  .mobile-sessions tr[data-record] {
+    box-shadow: inset 2px 0 0 var(--primary);
+  }
+  .mobile-detail-table tr[data-record] > td,
+  .mobile-sessions tr[data-record] > td {
+    box-shadow: none;
   }
   .mobile-detail-table td:last-child {
     grid-column: 2 / -1;
@@ -366,7 +375,7 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
-    padding: 12px 0;
+    padding: 12px;
   }
   .mobile-sessions td {
     padding: 0;
